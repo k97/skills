@@ -2,11 +2,13 @@
 name: seo-full
 description: >
   Full SEO + GEO + Fix workflow for web projects. Runs in three sequential phases:
-  (1) technical SEO audit — verifiable bugs grouped by severity; (2) GEO review —
+  (1) technical SEO audit — verifiable bugs grouped by severity, including redirect-loop
+  and canonical-host integrity checks (static + live redirect-chain trace); (2) GEO review —
   AI citation readiness, schema completeness, entity recognition; (3) implementation —
   applies all findings directly in the codebase with batched commits.
   Use when the user says "SEO audit", "GEO review", "AI search optimisation", "not being
-  cited by AI", "fix SEO issues", "improve schema", "technical SEO", "not ranking", or
+  cited by AI", "fix SEO issues", "improve schema", "technical SEO", "not ranking",
+  "redirect loop", "too many redirects", "www vs apex", "canonical host", or
   "apply SEO fixes". Supports scoped runs via flags appended to the invocation:
   --audit (Phase 1 only), --geo (Phase 2 only), --fix (Phase 3 only, requires reports
   in context), --full (all three phases, default).
@@ -56,8 +58,11 @@ Before starting, confirm:
 ## Phase 1 — Technical SEO Audit (`--audit`)
 
 *Source inspection of metadata, robots, sitemap, structured data, redirects, and
-middleware. Not a live production crawl — note absence of Search Console / Core Web
-Vitals field data in output.*
+middleware. Primarily source-based — note absence of Search Console / Core Web
+Vitals field data in output. The one exception is §1.6: when a live URL is reachable,
+trace the real redirect chain — redirect loops and host mismatches are invisible from
+source alone because they emerge from the app config and the hosting platform fighting
+each other.*
 
 ### 1.1 Crawlability & indexation
 - `robots.txt` / `robots.ts` — production allows all bots; alpha/staging gated to noindex
@@ -94,6 +99,60 @@ Vitals field data in output.*
 ### 1.5 Conversion pages
 - Post-purchase / session-specific pages marked `robots: { index: false, follow: true }`
 - No double-brand suffix on checkout-adjacent pages
+
+### 1.6 Redirect & canonical-host integrity
+
+> **Why this matters**: the single most common pre-deploy catastrophe is an app-level
+> host redirect (www↔apex, http↔https, or trailing-slash) that *fights* a redirect the
+> hosting platform already performs. The two ping-pong and produce an infinite loop
+> (`ERR_TOO_MANY_REDIRECTS`), taking the whole site down. The rule is: **the app should
+> not redirect between hosts the platform manages — leave host canonicalisation to the
+> platform.** Confirm which direction the platform already redirects *before* proposing
+> or adding any host-level redirect.
+
+**Static — inspect every place host/redirect logic can live:**
+- Framework redirects/rewrites: `next.config.{js,ts,mjs}` `redirects()` / `rewrites()`,
+  Nuxt `routeRules`, SvelteKit hooks, Astro `redirects`, Remix loaders, Gatsby
+  `createRedirect`, Angular/Vue router guards
+- Edge / server middleware: `middleware.ts`, `_middleware`, Cloudflare Workers,
+  Netlify/Lambda edge functions — any code inspecting `req.headers.host` and issuing
+  a 3xx to a different host
+- Platform config files: `vercel.json` (`redirects`, `cleanUrls`, `trailingSlash`),
+  `netlify.toml` + `_redirects`, `_headers`, `.htaccess` (`RewriteRule`/`RewriteCond`),
+  nginx `server`/`return 301`, Cloudflare Redirect Rules / Page Rules, `firebase.json`
+  `hosting.redirects`
+- The canonical host string used by: `metadataBase`, `<link rel="canonical">`,
+  the sitemap (`<loc>` URLs), `robots.txt`/`robots.ts` (`Host:` and `Sitemap:` lines),
+  and Open Graph `og:url` / `twitter` URLs
+
+**Flag** any app-level www↔apex, http↔https, or trailing-slash redirect as *High* —
+these almost always duplicate a platform redirect and risk a loop. Do not silently
+assume the direction; report it as needing confirmation of the platform's behaviour.
+
+**Live — when a URL is reachable, trace the real redirect chain.** Test **both** hosts
+(apex and www) **and** a deep path (e.g. `/blog`), not just `/` — loops often only
+appear on non-root paths:
+
+```bash
+for u in https://apex.example https://www.apex.example https://apex.example/blog; do
+  echo "== $u"
+  curl -sIL --max-redirs 10 "$u" -o /dev/null \
+    -w '%{num_redirects} hops → HTTP %{http_code}  final: %{url_effective}\n'
+done
+```
+
+- A **loop** shows as curl **exit code 47** / "Maximum (10) redirects followed", with two
+  hosts alternating in successive `Location:` headers. Report as *Critical* — the site is
+  down. (`curl -sIL "$u"` without `-o /dev/null` prints the raw `Location:` chain so you
+  can name the two hosts that ping-pong.)
+- A **clean** result is 0–2 hops ending in `HTTP 200`.
+
+**Canonical-host consistency (run even when there is no loop).** After following
+redirects, the host you actually land on must *exactly* match the host declared in:
+`<link rel="canonical">`, the sitemap `<loc>` URLs, `robots.txt` `Host:`/`Sitemap:`, and
+`og:url`. Any disagreement (e.g. canonical says apex but you land on www) splits ranking
+signals and is a *High* finding even without a loop. Report the exact surface(s) that
+disagree and the one-line fix to align them all to the single host you land on.
 
 ### Phase 1 output format
 
@@ -175,6 +234,12 @@ Group findings by:
 - Leave a brief inline comment where the intent is not obvious
 - TypeScript throughout — no `any`, infer types from existing patterns in the file
 - Dynamic schema fields wired to existing data sources — never hardcoded values
+- **Never add a host-level redirect (www↔apex, http↔https, trailing-slash) without first
+  confirming which direction the hosting platform already redirects.** The fix for a
+  redirect loop is almost always to *remove* the app-level redirect, not add another.
+  When a canonical-host mismatch is the finding, align the canonical/sitemap/robots/OG
+  strings to the host the site actually lands on — do not change the redirect to match
+  the metadata.
 
 ### Batch 1 — Bug fixes (commit after this batch)
 
@@ -192,6 +257,8 @@ Typical Batch 1 items (adapt to whatever the reports contain):
 - Add `alternates: { canonical: "/<path>" }` to every page's metadata export
 - Add `robots: { index: false, follow: true }` to session-specific pages
 - Link any orphan pages from an appropriate parent section
+- Resolve redirect loops by removing the app-level host redirect that fights the platform
+  (see ground rule above); align canonical/sitemap/robots/OG to the single landed-on host
 
 ### Batch 2 — Schema + GEO (commit after this batch)
 

@@ -12,7 +12,7 @@ The skill runs in three sequential phases, each individually invokable via a fla
 
 | Phase | Flag | What happens | Touches code? |
 |-------|------|--------------|---------------|
-| **1 · Technical SEO Audit** | `--audit` | Source inspection of metadata, robots, sitemap, structured data, redirects, middleware. Findings grouped by severity with a prioritised action plan. | No |
+| **1 · Technical SEO Audit** | `--audit` | Source inspection of metadata, robots, sitemap, structured data, redirects, middleware — plus a redirect-loop / canonical-host integrity check (static config review **and** a live redirect-chain trace of apex, www, and a deep path when a URL is reachable). Findings grouped by severity with a prioritised action plan. | No |
 | **2 · GEO Review** | `--geo` | Generative Engine Optimisation — schema completeness, entity recognition, AI-citation readiness, content opportunities. | No |
 | **3 · Fix Implementation** | `--fix` | Applies every finding from the reports directly in the codebase, in two committed batches (bug fixes, then schema/GEO). | Yes |
 | **All three** | `--full` *(default)* | Audit → GEO → Fix in sequence. | Yes |
@@ -64,7 +64,7 @@ Restart Claude Code (or start a new session) and the `/seo-full` skill will be a
 /seo-full ./my-next-app --routes /,/download,/purchase
 ```
 
-The skill also triggers on natural language — phrases like *"SEO audit"*, *"GEO review"*, *"we're not being cited by AI"*, *"improve schema"*, *"technical SEO"*, or *"apply SEO fixes"*.
+The skill also triggers on natural language — phrases like *"SEO audit"*, *"GEO review"*, *"we're not being cited by AI"*, *"improve schema"*, *"technical SEO"*, *"redirect loop"*, *"too many redirects"*, *"www vs apex / canonical host"*, or *"apply SEO fixes"*.
 
 ### Optional context file
 
