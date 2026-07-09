@@ -15,6 +15,8 @@ npx skills add k97/skills --skill codebase-seo    # install one skill
 
 `skills add` takes the **repo path**, not the skill name. Requirements vary per skill; `codebase-seo` needs `curl` and Node 18+, with nothing to `npm install`.
 
+> **Claude Code, in a project with no `.claude/` directory yet:** the CLI writes the canonical copy to `.agents/skills/` and skips the `.claude/skills/` symlink, even though it reports "Installing to: … Claude Code". Run `mkdir -p .claude` first, or install globally with `-g`, and the symlink appears as expected.
+
 Or copy a skill in manually:
 
 ```bash
