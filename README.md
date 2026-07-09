@@ -1,37 +1,41 @@
-# codebase-seo — an SEO + GEO audit & fix skill for AI coding agents
+# k97/skills
 
-An [Agent Skill](https://agentskills.io) that takes a web project from **audit → AI-citation review → applied fixes** in one workflow. Built for Next.js / TypeScript by default, and adapts to whatever framework it finds.
+Agent Skills for AI coding agents, built on the [Agent Skills](https://agentskills.io) open standard — installable in Claude Code, Cursor, Codex, Copilot, Gemini CLI, and ~20 other agents.
 
-Unlike prompt-only SEO skills, this one ships **three dependency-free scripts** so the audit produces evidence rather than guesses: a live redirect-chain tracer, a JSON-LD linter, and a metadata auditor that checks canonical hosts against the host your site *actually serves*.
-
----
+| Skill | What it does |
+|---|---|
+| [**`codebase-seo`**](skills/codebase-seo/) | Technical SEO audit → GEO (AI-citation) review → applies the fixes in your codebase. Ships scripts that trace redirect loops and lint JSON-LD. |
 
 ## Install
 
 ```bash
-npx skills add k97/seo-skill                       # prompts you to pick
-npx skills add k97/seo-skill --skill codebase-seo  # or name it directly
+npx skills add k97/skills --list                  # see what's in here
+npx skills add k97/skills --skill codebase-seo    # install one skill
 ```
 
-`skills add` takes the **repo path**, not the skill name. Use `--list` to see what a repo contains before installing.
+`skills add` takes the **repo path**, not the skill name. Requirements vary per skill; `codebase-seo` needs `curl` and Node 18+, with nothing to `npm install`.
 
-Or copy it in manually:
+Or copy a skill in manually:
 
 ```bash
-git clone https://github.com/k97/seo-skill /tmp/seo-skill
+git clone https://github.com/k97/skills /tmp/k97-skills
 
-mkdir -p .claude/skills                                    # this project only
-cp -r /tmp/seo-skill/skills/codebase-seo .claude/skills/
+mkdir -p .claude/skills                                  # this project only
+cp -r /tmp/k97-skills/skills/codebase-seo .claude/skills/
 
-mkdir -p ~/.claude/skills                                  # or: everywhere
-cp -r /tmp/seo-skill/skills/codebase-seo ~/.claude/skills/
+mkdir -p ~/.claude/skills                                # or: everywhere
+cp -r /tmp/k97-skills/skills/codebase-seo ~/.claude/skills/
 ```
 
 Start a new session and `/codebase-seo` is available.
 
-**Requirements:** `curl` and Node 18+. Nothing to `npm install`.
-
 ---
+
+# codebase-seo
+
+Takes a web project from **audit → AI-citation review → applied fixes** in one workflow. Built for Next.js / TypeScript by default, and adapts to whatever framework it finds.
+
+Unlike prompt-only SEO skills, it ships **three dependency-free scripts** so the audit produces evidence rather than guesses: a live redirect-chain tracer, a JSON-LD linter, and a metadata auditor that checks canonical hosts against the host your site *actually serves*.
 
 ## Usage
 
@@ -47,8 +51,6 @@ It also triggers on plain language: *"run an SEO audit"*, *"why aren't we cited 
 
 If you keep a product brief at `.agents/product-marketing.md` or `.claude/product-marketing.md`, the skill reads it before asking you anything.
 
----
-
 ## The three phases
 
 | Phase | Flag | What it does | Touches code |
@@ -57,8 +59,6 @@ If you keep a product brief at `.agents/product-marketing.md` or `.claude/produc
 | **2 · GEO review** | `--geo` | Whether ChatGPT, Perplexity, Gemini, and Claude can reach, parse, and cite you. Bot access, schema completeness, content tactics. | no |
 | **3 · Fix** | `--fix` | Applies the findings in your codebase, then re-runs the scripts to verify. Leaves the commit to you. | yes |
 | **All three** | `--full` *(default)* | 1 → 2 → 3. | yes |
-
----
 
 ## The scripts
 
@@ -85,15 +85,11 @@ Each exits non-zero on an error-level finding, so they drop straight into CI. Th
 
 **What they can't see:** anything injected by client-side JavaScript. They read server-rendered HTML, same as `web_fetch`. The skill says so explicitly rather than reporting "no schema found."
 
----
-
 ## Why the redirect check exists
 
 The most common way to take a site fully down on deploy day is an app-level host redirect (`www`↔apex, `http`↔`https`, trailing slash) that duplicates one your hosting platform already performs. The two ping-pong, and every URL returns `ERR_TOO_MANY_REDIRECTS`.
 
 It is invisible from source, because neither redirect is wrong on its own. `redirect-trace.sh` finds it, and the skill's hard rule is to *remove* the app-level redirect rather than add another.
-
----
 
 ## A note on GEO claims
 
@@ -101,12 +97,21 @@ Plenty of SEO advice ranks schema types by "citation yield, per Princeton resear
 
 This skill cites the paper for what it found, treats schema as a cheap correctness measure rather than a measured ranking lever, and does not project traffic numbers it cannot observe.
 
+## Credits
+
+Assembled and extended by [@k97](https://github.com/k97), drawing on:
+
+- **[coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills)** — `seo-audit`, `ai-seo`, `schema`, `cro`
+- **[ReScienceLab/opc-skills](https://github.com/ReScienceLab/opc-skills)** — `seo-geo`
+
+`codebase-seo` adds the live redirect and canonical-host tooling, the JSON-LD linter, and the in-codebase fix phase. For narrower single-purpose tools, the collections above are the place to look.
+
 ---
 
 ## Repo layout
 
 ```
-seo-skill/
+k97/skills
 └── skills/
     └── codebase-seo/
         ├── SKILL.md
@@ -120,7 +125,9 @@ seo-skill/
             └── audit-meta.mjs
 ```
 
-Structured around [progressive disclosure](https://agentskills.io), so the skill costs almost nothing until you use it:
+The registry CLI walks root `SKILL.md`, `skills/<name>/SKILL.md`, or `skills/<category>/<name>/SKILL.md`. Anything else is invisible to `npx skills add`.
+
+Skills are structured around [progressive disclosure](https://agentskills.io), so each costs almost nothing until you use it:
 
 | Layer | When it loads | Cost |
 |---|---|---|
@@ -130,17 +137,6 @@ Structured around [progressive disclosure](https://agentskills.io), so the skill
 | `scripts/*` | executed, never read into context | 0 — only their output counts |
 
 So an `--audit` run never pays for the GEO reference, and no run ever pays for the ~4,700 tokens of script source. The scripts print findings rather than confirmations for the same reason: their stdout is the part that lands in the context window.
-
----
-
-## Credits
-
-Assembled and extended by [@k97](https://github.com/k97), drawing on:
-
-- **[coreyhaines31/marketingskills](https://github.com/coreyhaines31/marketingskills)** — `seo-audit`, `ai-seo`, `schema`, `cro`
-- **[ReScienceLab/opc-skills](https://github.com/ReScienceLab/opc-skills)** — `seo-geo`
-
-`codebase-seo` adds the live redirect and canonical-host tooling, the JSON-LD linter, and the in-codebase fix phase. For narrower single-purpose tools, the collections above are the place to look.
 
 ## License
 
