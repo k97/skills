@@ -1,5 +1,5 @@
 ---
-name: codebase-seo
+name: discoverability
 description: >-
   Technical SEO audit, GEO (AI-citation) review, and in-codebase SEO fixes for web projects.
   Use for SEO audit, GEO review, AI search optimisation or optimization, "not cited by AI",
@@ -9,7 +9,7 @@ description: >-
 argument-hint: "[url|path] [--audit|--geo|--fix|--full] [--routes /a,/b]"
 ---
 
-# codebase-seo
+# discoverability
 
 Audit, then GEO review, then apply fixes. Next.js / TypeScript defaults; follow whatever
 the repo already uses. `${CLAUDE_SKILL_DIR}` is this skill's directory — the working

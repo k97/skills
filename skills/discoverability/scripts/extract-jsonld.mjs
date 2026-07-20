@@ -13,7 +13,7 @@
 
 import { readFile } from 'node:fs/promises';
 
-const UA = 'Mozilla/5.0 (compatible; codebase-seo/1.0)';
+const UA = 'Mozilla/5.0 (compatible; discoverability/1.0)';
 const BLOCK_RE =
   /<script[^>]+type\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
 

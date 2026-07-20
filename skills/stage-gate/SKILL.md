@@ -1,5 +1,5 @@
 ---
-name: phase-gate
+name: stage-gate
 description: >-
   Quality gates for the three checkpoints of a feature cycle: after planning
   (--plan gates the plan for unstated assumptions and unverifiable success criteria),
@@ -15,7 +15,7 @@ description: >-
 argument-hint: "[--plan|--dev|--release] [--base <ref>]"
 ---
 
-# phase-gate
+# stage-gate
 
 One skill, three gates, run at the boundary each gate is named after. `--plan` and
 `--dev` are read-only reviews; `--release` writes. Reference paths below are

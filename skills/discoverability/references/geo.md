@@ -1,6 +1,6 @@
 # GEO — Generative Engine Optimisation
 
-Loaded by Phase 2 of `codebase-seo`. Concerns being **cited** in AI-generated answers, not
+Loaded by Phase 2 of `discoverability`. Concerns being **cited** in AI-generated answers, not
 ranked in blue links.
 
 ## What the research actually says

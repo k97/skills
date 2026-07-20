@@ -18,7 +18,7 @@
 
 import { readFile } from 'node:fs/promises';
 
-const UA = 'Mozilla/5.0 (compatible; codebase-seo/1.0)';
+const UA = 'Mozilla/5.0 (compatible; discoverability/1.0)';
 
 const TITLE_MIN = 30;
 const TITLE_MAX = 60;

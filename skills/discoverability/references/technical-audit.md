@@ -1,6 +1,6 @@
 # Technical SEO audit — full checklist
 
-Loaded by Phase 1 of `codebase-seo`. Run the scripts first; use this to explain and locate
+Loaded by Phase 1 of `discoverability`. Run the scripts first; use this to explain and locate
 what they surface, and to cover what they cannot see.
 
 ## 1. Crawlability and indexation

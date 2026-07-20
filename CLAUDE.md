@@ -1,6 +1,6 @@
 # k97/skills
 
-Multi-skill collection built on the [Agent Skills](https://agentskills.io) standard: `phase-gate`, `codebase-seo`, `apple-appicon`.
+Multi-skill collection built on the [Agent Skills](https://agentskills.io) standard: `stage-gate`, `apple-appicon`, `discoverability`.
 
 ## Commands
 

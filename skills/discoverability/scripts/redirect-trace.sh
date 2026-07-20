@@ -15,7 +15,7 @@
 set -uo pipefail
 
 MAX_REDIRS=${MAX_REDIRS:-10}
-UA=${UA:-"Mozilla/5.0 (compatible; codebase-seo/1.0)"}
+UA=${UA:-"Mozilla/5.0 (compatible; discoverability/1.0)"}
 
 if [ $# -lt 1 ]; then
   sed -n '3,13p' "$0" >&2
