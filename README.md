@@ -6,6 +6,7 @@ Agent Skills for AI coding agents, built on the [Agent Skills](https://agentskil
 |---|---|
 | [**`phase-gate`**](skills/phase-gate/) | Quality gates at the three feature-cycle boundaries: plan review (`--plan`), diff review (`--dev`), post-merge hygiene (`--release`). Karpathy-style guardrails + memory-file (CLAUDE.md / AGENTS.md) progressive disclosure. Agent-agnostic. |
 | [**`codebase-seo`**](skills/codebase-seo/) | Technical SEO audit → GEO (AI-citation) review → applies the fixes in your codebase. Ships scripts that trace redirect loops and lint JSON-LD. |
+| [**`apple-appicon`**](skills/apple-appicon/) | Apple platform app icons (iOS, iPadOS, macOS, visionOS) from one source image, HIG as the north star. Validates the source, then generates appiconsets, `.icns`, visionOS stacks, and Tauri's full set with the dock-icon margin fix. Agent-agnostic. |
 
 ## Install
 
@@ -14,7 +15,7 @@ npx skills add k97/skills --list                  # see what's in here
 npx skills add k97/skills --skill phase-gate      # install one skill
 ```
 
-`skills add` takes the **repo path**, not the skill name. Requirements vary per skill; `phase-gate` needs only `git`. `codebase-seo` needs `curl` and Node 18+, with nothing to `npm install`.
+`skills add` takes the **repo path**, not the skill name. Requirements vary per skill; `phase-gate` needs only `git`. `codebase-seo` needs `curl` and Node 18+, with nothing to `npm install`. `apple-appicon` is fully native on macOS (Xcode Command Line Tools: `sips`, `iconutil`, `swift`); on Linux/Windows it says so up front and falls back to ImageMagick 7 + Tauri's own cross-platform CLI where it can.
 
 > **Claude Code, in a project with no `.claude/` directory yet:** the CLI writes the canonical copy to `.agents/skills/` and skips the `.claude/skills/` symlink, even though it reports "Installing to: … Claude Code". Run `mkdir -p .claude` first, or install globally with `-g`, and the symlink appears as expected.
 
@@ -197,6 +198,74 @@ Assembled and extended by [@k97](https://github.com/k97), drawing on:
 
 ---
 
+# apple-appicon
+
+One source image in, HIG-correct icon sets out — for **iOS, iPadOS, macOS, and visionOS**, with first-class **Tauri** support. Apple's [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/app-icons) are the north star: full-bleed unmasked squares where the system applies the mask (iOS, iPadOS, visionOS), Apple's rounded-rect-with-margins treatment baked in where it doesn't (legacy macOS `.icns`).
+
+Everything runs on tools already on a dev Mac — `sips`, `iconutil`, and a small Swift/CoreGraphics utility — so there is nothing to install.
+
+**Agent-agnostic**, like the rest of this repo: the skill format is the cross-agent [Agent Skills](https://agentskills.io) standard, and the workflow needs nothing beyond a shell — no Claude Code-specific variables or tools. Commands reference `<skill-dir>` generically (Claude Code resolves it via `${CLAUDE_SKILL_DIR}`; other agents use the installed skill's directory). The one optional extra: agents with image input visually check the artwork against HIG advisories (pre-rounded corners, thin lines, text, photos); agents without it hand that checklist to you instead.
+
+Platform-wise it degrades explicitly rather than failing mid-run: invoked on Linux or Windows, the first thing the agent does is say what works there — Tauri projects keep full support including the `.icns` (Tauri's CLI is Rust and cross-platform), asset-catalog PNGs fall back to documented ImageMagick 7 equivalents, and only a bare `.icns` outside Tauri genuinely needs a Mac, `png2icns`, or CI.
+
+## Usage
+
+```bash
+/apple-appicon ./artwork/logo.png                      # detect the project, generate for its targets
+/apple-appicon ./logo.png --platform tauri             # Tauri: full set + macOS dock-icon fix
+/apple-appicon ./logo.png --platform macos --out ./out # one platform, custom destination
+```
+
+It also triggers on plain language: *"generate app icons from this image"*, *"make an .icns"*, *"our Tauri dock icon looks huge"*, *"App Store icon"*.
+
+Example prompts:
+
+> Here's our logo at `design/icon-1024.png` — generate the app icons for this Tauri app.
+
+> Make an AppIcon.appiconset for iOS with dark and tinted variants from `logo.png`.
+
+> Our dock icon fills the whole tile and looks wrong next to other Mac apps. Fix it.
+
+## The workflow
+
+| Step | What happens |
+|---|---|
+| **Validate** | `scripts/validate-source.sh` gates the source: square aspect, ≥1024 px, alpha channel, sRGB/P3, 8-bit. Hard failures stop the run with copy-paste fixes (centre-crop vs transparent pad). |
+| **Look** | The agent views the artwork and flags HIG problems a script can't see: pre-rounded corners (double-masking), thin lines that die at 16 px, text, photos. |
+| **Generate** | Per platform: `AppIcon.appiconset` (1024 single-size, dark/tinted variants), `.icns` via `iconutil`, visionOS `solidimagestack`, or `tauri icon` plus a rebuilt margined `.icns`. |
+| **Verify** | Pixel sizes re-checked, alpha confirmed stripped on the App Store icon, outputs viewed, and a table of files → where they're wired. |
+
+**Why the macOS treatment matters:** `tauri icon` (and most generators) put the full-bleed source straight into `icon.icns`, which renders as an oversized square in the Dock. Apple icons carry ~10% margins inside a rounded rectangle (824 px content box on the 1024 canvas, r ≈ 185 px, subtle shadow). `scripts/appicon.swift macos` applies exactly that before the `.icns` is compiled — full-bleed everywhere else, margined on macOS, per the HIG.
+
+## The scripts
+
+```bash
+cd skills/apple-appicon
+
+# Gate any candidate source image (exit 1 on blocking problems)
+bash scripts/validate-source.sh ../logo.png
+
+# Transforms, all 8-bit sRGB PNG out:
+swift scripts/appicon.swift resize  in.png out.png 512          # exact square resize
+swift scripts/appicon.swift flatten in.png out.png 1024 "#0A84FF" # opaque + alpha stripped (App Store)
+swift scripts/appicon.swift pad     in.png out.png              # square-ify on transparent canvas
+swift scripts/appicon.swift macos   in.png out.png              # Apple macOS margins + corners + shadow
+```
+
+Scope notes: watchOS/tvOS and Icon Composer's layered Liquid Glass `.icon` bundles are out of scope in v1 (the skill generates the flat baseline and says so). **Roadmap:** Flutter, React Native, and Ionic/Capacitor integrations; until then the Apple-side assets drop into those frameworks' iOS/macOS folders unchanged.
+
+## Credits
+
+Assembled by [@k97](https://github.com/k97), drawing on:
+
+- **[Apple HIG · App icons](https://developer.apple.com/design/human-interface-guidelines/app-icons)** and the **[Tauri v2 icon docs](https://v2.tauri.app/develop/icons/)** — the specs, distilled into `references/`
+- **[brianlovin/claude-config](https://www.skills.sh/brianlovin/claude-config/favicon)** (`favicon`) — the validate → generate → wire-up workflow shape
+- **[michaelboeding/skills](https://www.skills.sh/michaelboeding/skills/icon-generation)** (`icon-generation`) — prior art for agent-driven icon pipelines
+
+`apple-appicon` adds the HIG-first shape rules per platform, the source-image gate, and the Tauri dock-icon fix.
+
+---
+
 ## Repo layout
 
 ```
@@ -208,16 +277,25 @@ k97/skills
     │       ├── plan-gate.md          # --plan checklist
     │       ├── diff-review.md        # --dev lenses
     │       └── memory-hygiene.md     # --release triage + refactor
-    └── codebase-seo/
+    ├── codebase-seo/
+    │   ├── SKILL.md
+    │   ├── references/
+    │   │   ├── technical-audit.md    # full Phase 1 checklist
+    │   │   ├── geo.md                # Phase 2 depth + bot table
+    │   │   └── schema-recipes.md     # copy-paste JSON-LD, lint-clean
+    │   └── scripts/
+    │       ├── redirect-trace.sh
+    │       ├── extract-jsonld.mjs
+    │       └── audit-meta.mjs
+    └── apple-appicon/
         ├── SKILL.md
         ├── references/
-        │   ├── technical-audit.md    # full Phase 1 checklist
-        │   ├── geo.md                # Phase 2 depth + bot table
-        │   └── schema-recipes.md     # copy-paste JSON-LD, lint-clean
+        │   ├── apple-hig.md          # per-platform geometry, mask rules, advisories
+        │   ├── platform-recipes.md   # commands + Contents.json templates
+        │   └── tauri.md              # tauri icon + dock-icon fix + roadmap
         └── scripts/
-            ├── redirect-trace.sh
-            ├── extract-jsonld.mjs
-            └── audit-meta.mjs
+            ├── validate-source.sh    # the source-image gate
+            └── appicon.swift         # resize / flatten / pad / macos treatments
 ```
 
 The registry CLI walks root `SKILL.md`, `skills/<name>/SKILL.md`, or `skills/<category>/<name>/SKILL.md`. Anything else is invisible to `npx skills add`.
