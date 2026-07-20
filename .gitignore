@@ -1,5 +1,7 @@
 # Claude Code local settings (machine-specific, not for sharing)
-.claude/settings.local.json
+.claude/settings.json
+# skills CLI symlink to ~/.agents/skills (absolute path, machine-specific)
+.claude/skills
 
 # OS / editor cruft
 .DS_Store
