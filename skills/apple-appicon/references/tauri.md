@@ -38,7 +38,7 @@ Pick the runner by lockfile: `pnpm-lock.yaml` → pnpm, `yarn.lock` → yarn,
 
 `tauri icon` puts the **full-bleed** source into `icon.icns`. On macOS that
 renders as an oversized square in the Dock — Apple icons carry ~10% margins
-and a rounded rectangle (see `apple-hig.md`). The fix: let `tauri icon`
+and a rounded rectangle (see [apple-hig.md](apple-hig.md)). The fix: let `tauri icon`
 generate everything, then rebuild only the `.icns` from a HIG-margined
 variant.
 
@@ -65,7 +65,7 @@ Leave `32x32.png` / `128x128.png` / `icon.ico` full-bleed — margins are a
 macOS-only convention; Windows and Linux icons should fill the frame.
 
 **Not on a Mac?** The whole fix still works: build the margined 1024 PNG with
-the ImageMagick recipe in `platform-recipes.md` (non-macOS fallbacks), then
+the ImageMagick recipe in [platform-recipes.md](platform-recipes.md) (non-macOS fallbacks), then
 let `tauri icon` compile the container itself —
 `tauri icon macos-1024.png -o /tmp/margined-icons` — and copy only
 `/tmp/margined-icons/icon.icns` over `src-tauri/icons/icon.icns`. The Tauri
@@ -84,7 +84,7 @@ full-bleed — judge by the built app.
 ## If `tauri icon` is unavailable
 
 Everything except `icon.ico` can be produced natively (recipes in
-`platform-recipes.md`; PNGs via `appicon.swift resize`). For the `.ico`,
+[platform-recipes.md](platform-recipes.md); PNGs via `appicon.swift resize`). For the `.ico`,
 use ImageMagick if present:
 
 ```bash

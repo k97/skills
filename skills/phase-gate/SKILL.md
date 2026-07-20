@@ -37,7 +37,7 @@ Gates do not chain. Each runs at a different moment in the cycle, so there is no
 
 ## Gate 1 — plan review (`--plan`)
 
-Read `references/plan-gate.md` and check the plan in context against it:
+Read [references/plan-gate.md](references/plan-gate.md) and check the plan in context against it:
 assumptions stated, interpretations surfaced, simpler path considered, every
 step traceable to the request and paired with a runnable verification.
 
@@ -46,7 +46,7 @@ listed. Do not start implementing — the gate ends when the verdict is delivere
 
 ## Gate 2 — diff review (`--dev`)
 
-Read `references/diff-review.md`. Establish the diff first (unstaged + staged;
+Read [references/diff-review.md](references/diff-review.md). Establish the diff first (unstaged + staged;
 else the branch against `--base`, default: the repo's default branch), then
 review every hunk through the three lenses: Simplicity, Surgical, Verification.
 
@@ -65,7 +65,7 @@ Close with a table — `# | Finding | Lens | Blocks push?` — and a verdict:
 
 ## Gate 3 — hygiene pass (`--release`)
 
-Read `references/memory-hygiene.md`. It targets the repo's agent memory file —
+Read [references/memory-hygiene.md](references/memory-hygiene.md). It targets the repo's agent memory file —
 `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, or Copilot instructions, whichever the
 repo uses (detection table in the reference). Two jobs, in order:
 

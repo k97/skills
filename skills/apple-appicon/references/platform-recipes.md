@@ -5,7 +5,7 @@ Line Tools). `$SKILL` below means this skill's directory; `$SRC` is the
 validated square source PNG (≥1024 px, RGBA). Run everything from the user's
 project; put standalone output under `./AppIcons/<platform>/`.
 
-Every recipe assumes validation already passed (`scripts/validate-source.sh`).
+Every recipe assumes validation already passed ([scripts/validate-source.sh](../scripts/validate-source.sh)).
 
 ## iOS / iPadOS — `AppIcon.appiconset` (single-size, Xcode 14+)
 
@@ -173,9 +173,9 @@ layer must be opaque.
 For Linux or Windows (WSL / Git Bash), where `sips`, `iconutil`, and `swift`
 don't exist. Tell the user which path you're on before generating. Windows
 `.ico` stays the same everywhere (`tauri icon` or the `magick` one-liner in
-`tauri.md`).
+[tauri.md](tauri.md)).
 
-`appicon.swift` mode equivalents:
+[appicon.swift](../scripts/appicon.swift) mode equivalents:
 
 ```bash
 # resize
@@ -224,4 +224,4 @@ file icon.icns        # → "Mac OS X icon"
 ```
 
 Report a table: file → size → where it is referenced (Contents.json,
-`tauri.conf.json`, Xcode build setting). For Tauri wiring, read `tauri.md`.
+`tauri.conf.json`, Xcode build setting). For Tauri wiring, read [tauri.md](tauri.md).

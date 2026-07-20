@@ -1,7 +1,7 @@
 # JSON-LD recipes
 
 Loaded by Phase 2 and Phase 3. Every block below lints clean under
-`scripts/extract-jsonld.mjs`.
+[scripts/extract-jsonld.mjs](../scripts/extract-jsonld.mjs).
 
 ## Rules that apply to all of them
 

@@ -70,7 +70,7 @@ ask rather than assume.
 ## Schema work
 
 Cheap, correct, and it makes facts extractable. Order by what is missing outright rather
-than by an invented citation ranking. Copy-paste blocks: `references/schema-recipes.md`.
+than by an invented citation ranking. Copy-paste blocks: [schema-recipes.md](schema-recipes.md).
 
 - `Organization` and `WebSite` — root layout. Establishes the entity behind the site.
 - `SoftwareApplication` or `Product` — the thing being sold, with every field wired to a

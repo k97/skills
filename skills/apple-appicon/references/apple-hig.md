@@ -2,7 +2,7 @@
 
 Distilled from [Apple's Human Interface Guidelines — App icons](https://developer.apple.com/design/human-interface-guidelines/app-icons)
 (current as of the June 2026 Liquid Glass refinements). This file is the design
-authority; `platform-recipes.md` holds the commands that implement it.
+authority; [platform-recipes.md](platform-recipes.md) holds the commands that implement it.
 
 ## Per-platform geometry
 
@@ -66,7 +66,7 @@ developer.apple.com/icon-composer) as `.icon` bundles. That is a GUI workflow
 this skill does not replace: when the user wants layered Liquid Glass icons for
 an Xcode-native app, generate the flat asset set as the baseline and point them
 to Icon Composer. visionOS and tvOS layers go directly into the Xcode asset
-catalog instead (image stacks — see `platform-recipes.md`).
+catalog instead (image stacks — see [platform-recipes.md](platform-recipes.md)).
 
 ## visionOS specifics
 

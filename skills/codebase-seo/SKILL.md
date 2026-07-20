@@ -51,7 +51,7 @@ it is to `web_fetch`. Never write "no schema found" on a script's say-so; confir
 
 ## Phase 1 — technical audit (`--audit`)
 
-Read `${CLAUDE_SKILL_DIR}/references/technical-audit.md` and work its checklist. Run the
+Read [references/technical-audit.md](references/technical-audit.md) and work its checklist. Run the
 scripts first, then use source to locate and explain each finding.
 
 Report per finding:
@@ -69,8 +69,8 @@ Group by severity, then close with a table: `# | Finding | Severity | Effort | B
 
 ## Phase 2 — GEO review (`--geo`)
 
-Read `${CLAUDE_SKILL_DIR}/references/geo.md`. JSON-LD to copy:
-`${CLAUDE_SKILL_DIR}/references/schema-recipes.md`.
+Read [references/geo.md](references/geo.md). JSON-LD to copy:
+[references/schema-recipes.md](references/schema-recipes.md).
 
 Check bot access first — if the crawlers are blocked, nothing else in this phase matters.
 

@@ -39,7 +39,7 @@ what they surface, and to cover what they cannot see.
 
 ## 4. Structured data
 
-Detect with `scripts/extract-jsonld.mjs`. Confirm rich-result eligibility in Google's Rich
+Detect with [scripts/extract-jsonld.mjs](../scripts/extract-jsonld.mjs). Confirm rich-result eligibility in Google's Rich
 Results Test — the linter checks structure, only Google decides what earns a rich result.
 
 - `SoftwareApplication` / `Product` complete: description, url, applicationCategory,
@@ -68,8 +68,8 @@ Results Test — the linter checks structure, only Google decides what earns a r
 
 ## 7. Redirect and canonical-host integrity
 
-Detect with `scripts/redirect-trace.sh`. The hard rule — never add an app-level host
-redirect, remove the one that loops — is in `SKILL.md`. What follows is where to look.
+Detect with [scripts/redirect-trace.sh](../scripts/redirect-trace.sh). The hard rule — never add an app-level host
+redirect, remove the one that loops — is in [SKILL.md](../SKILL.md). What follows is where to look.
 
 ### Where host redirects hide
 

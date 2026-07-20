@@ -32,9 +32,9 @@ and what doesn't — then proceed with what does:
 - **macOS** → everything below, natively.
 - **Linux / Windows (WSL or Git Bash)** → Tauri projects keep *full* support:
   `tauri icon` is Rust and cross-platform, `.icns` included, and the margin
-  fix routes through it (`references/tauri.md`). Asset-catalog PNGs and
+  fix routes through it ([references/tauri.md](references/tauri.md)). Asset-catalog PNGs and
   `Contents.json` files need ImageMagick 7 — command equivalents are in the
-  "Non-macOS fallbacks" section of `references/platform-recipes.md`. A bare
+  "Non-macOS fallbacks" section of [references/platform-recipes.md](references/platform-recipes.md). A bare
   `.icns` outside a Tauri project is the one thing that genuinely needs
   `png2icns`, a Mac, or CI — say so rather than approximating.
 
@@ -64,7 +64,7 @@ re-export for resolution), apply the one the user picks, re-validate. Never
 generate from a failing source. WARNs are stated, not blocking.
 
 Then, if your agent can view images, **look at the source** and check it
-against the design advisories in `references/apple-hig.md`: pre-rounded
+against the design advisories in [references/apple-hig.md](references/apple-hig.md): pre-rounded
 corners or baked shadows (double-masking risk), thin lines that die at 16px,
 text, photographic content. Report what you see in one or two sentences;
 advisory only. No image input? Say the visual advisories were skipped and ask
@@ -72,8 +72,8 @@ the user to eyeball that list themselves.
 
 ## Step 2 — generate per target
 
-Read `references/platform-recipes.md` for the exact commands and asset-catalog
-templates; for Tauri read `references/tauri.md`. The shape rules that must
+Read [references/platform-recipes.md](references/platform-recipes.md) for the exact commands and asset-catalog
+templates; for Tauri read [references/tauri.md](references/tauri.md). The shape rules that must
 never be mixed up:
 
 | Target | Output | Shape treatment |
@@ -85,7 +85,7 @@ never be mixed up:
 | Tauri | full `src-tauri/icons/` set | `tauri icon` for everything, then rebuild `icon.icns` margined |
 
 Square, system-masked platforms (iOS/iPadOS/visionOS) get **no** baked corners
-or margins; only legacy macOS `.icns` does. The `scripts/appicon.swift` modes —
+or margins; only legacy macOS `.icns` does. The [scripts/appicon.swift](scripts/appicon.swift) modes —
 `resize`, `flatten` (opaque, alpha-stripped), `pad` (square-ify), `macos`
 (824/1024 rounded rect + margins + shadow) — cover every transform; `sips` is
 fine for plain resizes too.
@@ -109,10 +109,10 @@ ask for exactly that.
 ## Scope
 
 watchOS and tvOS are out of scope in v1 (geometry noted in
-`references/apple-hig.md`). Layered Liquid Glass `.icon` bundles are Icon
+[references/apple-hig.md](references/apple-hig.md)). Layered Liquid Glass `.icon` bundles are Icon
 Composer's job — generate the flat baseline and point the user there when
 relevant. Framework roadmap (Flutter, React Native, Ionic/Capacitor) and the
-interim answer for those users live at the end of `references/tauri.md`.
+interim answer for those users live at the end of [references/tauri.md](references/tauri.md).
 
 ## Sources
 
