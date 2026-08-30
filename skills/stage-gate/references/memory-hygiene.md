@@ -73,14 +73,14 @@ description instead of a project rule.
   with those four guidelines and link it. This is the preventive half of Gates
   1 and 2 — without it the guidelines only exist at review time, after the
   mistakes are already made.
-- The gate-trigger block is present, verbatim from the section below. Without
-  it the gates only run when someone remembers to ask for them — and the three
-  boundaries are exactly where nobody does, since each one arrives the moment
-  the work is declared finished.
+- The gate-trigger block is present, verbatim from the section below. It cannot
+  live in a rules file: those are read on demand, and a trigger that has to be
+  looked up first is not a trigger. Without it the gates only run when someone
+  remembers to ask, and the three boundaries are exactly where nobody does.
 
 ### The gate-trigger block
 
-Four lines, in the memory file itself:
+This block, verbatim, in the memory file itself:
 
 ```markdown
 ## Gates
@@ -90,11 +90,8 @@ Run the `stage-gate` skill at each boundary, even when the work looks finished
 plan written → `--plan`, code written before push → `--dev`, merged → `--release`.
 ```
 
-This block cannot be split out into a rules file. Linked rules are read on
-demand; only the memory file is loaded every session, and a trigger that has to
-be looked up first is not a trigger. It is the one exception to the "move it to
-the rules location" instinct — four lines is the price of the gates firing at
-all. If the project installed this skill under a different name, use that name.
+It is the one exception to the "move it to the rules location" instinct. If the
+project installed this skill under a different name, use that name.
 
 ## Refactor steps (only when >100 lines)
 
@@ -120,12 +117,10 @@ One-line description.
 - `command` — what it does (non-obvious only)
 
 ## Rules
-- [Topic](<rules-location>/topic.md) — one line
+- [Topic](RULES_DIR/topic.md) — one line
 
 ## Gates
-Run the `stage-gate` skill at each boundary, even when the work looks finished
-— dispatch a fresh reviewer, do not gate your own work:
-plan written → `--plan`, code written before push → `--dev`, merged → `--release`.
+(the gate-trigger block above, verbatim)
 
 ## Verification
 - `npm test` — run tests

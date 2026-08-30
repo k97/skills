@@ -8,6 +8,14 @@
 
 **Tech Stack:** Markdown only. No code, no build step. Verification is `/validate-skills` plus grep/fence assertions run in bash.
 
+> **Status: executed and merged 2026-08-30.** All five tasks shipped. Two
+> things landed that this plan did not anticipate: `references/sources.md`
+> (attribution extracted before the plan was written) and
+> `references/agents.md` (the agent capability contract, added afterwards).
+> Task 1 was amended during execution — as written it added the discovery
+> procedure but left two statements asserting the plan was in context, which
+> its own Task 5 check would have failed on.
+
 **Spec:** None separate — the requirements were established in conversation on 2026-08-30 and are restated in full under "Problem statement" below. That section is the spec; the plan argues from it.
 
 ## Global Constraints
@@ -60,7 +68,7 @@ Four defects, established by tracing the skill against the user's real workflow.
 - Produces: the heading `## Finding the plan` in `plan-gate.md`; Task 5's verification greps for it.
 - Produces: `argument-hint` accepting an optional plan path; Task 4's README examples rely on it.
 
-- [ ] **Step 1: Insert the discovery section into `plan-gate.md`**
+- [x] **Step 1: Insert the discovery section into `plan-gate.md`**
 
 Insert immediately after the opening paragraph (which ends `...becomes a --dev finding or a rewrite later.`) and before `## Checks`:
 
@@ -89,7 +97,7 @@ Two rules outrank that ordering:
   at the wrong thing should be visible in one line.
 ```
 
-- [ ] **Step 2: Widen `argument-hint` in `SKILL.md`**
+- [x] **Step 2: Widen `argument-hint` in `SKILL.md`**
 
 Replace:
 
@@ -103,7 +111,7 @@ with:
 argument-hint: "[--plan|--dev|--release] [<plan-path>] [--base <ref>]"
 ```
 
-- [ ] **Step 3: Update the `--plan` inference bullet in `SKILL.md`**
+- [x] **Step 3: Update the `--plan` inference bullet in `SKILL.md`**
 
 Replace:
 
@@ -117,7 +125,7 @@ with:
 - no diff, but a plan in the conversation or a recent plan file → `--plan`
 ```
 
-- [ ] **Step 4: Verify**
+- [x] **Step 4: Verify**
 
 ```bash
 cd /Users/karthik/Work/Projects/rkarthik/skills
@@ -129,7 +137,7 @@ grep -n "plan in context" skills/stage-gate/references/plan-gate.md || echo "PAS
 
 Expected: `PASS section`, `PASS arg-hint`, count ≥ 1, `PASS stale wording gone`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```
 git add skills/stage-gate/references/plan-gate.md skills/stage-gate/SKILL.md
@@ -149,7 +157,7 @@ git commit -m "feat(stage-gate): give Gate 1 an artifact-discovery procedure"
 - Consumes: `## Finding the plan` from Task 1 — the subagent brief hands over the artifact *path* that procedure resolved.
 - Produces: `references/reviewer-separation.md`, which must be linked from `SKILL.md` or Task 5's one-level-deep check fails.
 
-- [ ] **Step 1: Create `references/reviewer-separation.md`**
+- [x] **Step 1: Create `references/reviewer-separation.md`**
 
 ```markdown
 # Who runs the gate
@@ -194,7 +202,7 @@ A cold re-read is weaker than a fresh reviewer. Say so; never present the two
 as equivalent.
 ```
 
-- [ ] **Step 2: Link it from `SKILL.md`**
+- [x] **Step 2: Link it from `SKILL.md`**
 
 In the Gate 1 section, after the `Read [references/plan-gate.md]...` paragraph, add:
 
@@ -211,7 +219,7 @@ Dispatch it to a fresh reviewer per
 author reviewing their own diff has every justification still loaded.
 ```
 
-- [ ] **Step 3: Cross-link from both gate references**
+- [x] **Step 3: Cross-link from both gate references**
 
 Append one line to `plan-gate.md` and to `diff-review.md`:
 
@@ -219,7 +227,7 @@ Append one line to `plan-gate.md` and to `diff-review.md`:
 Who runs this gate: [reviewer-separation.md](reviewer-separation.md).
 ```
 
-- [ ] **Step 4: Verify**
+- [x] **Step 4: Verify**
 
 ```bash
 cd /Users/karthik/Work/Projects/rkarthik/skills
@@ -232,7 +240,7 @@ grep -q "author-run review" skills/stage-gate/references/reviewer-separation.md 
 
 Expected: three `PASS` lines, no `ORPHAN` output.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```
 git add skills/stage-gate/references/ skills/stage-gate/SKILL.md
@@ -250,7 +258,7 @@ git commit -m "feat(stage-gate): separate reviewer from author in Gates 1 and 2"
 - Consumes: nothing from earlier tasks.
 - Produces: the sequencing rule Task 4's `"verify and release"` prompt depends on.
 
-- [ ] **Step 1: Replace the no-chaining rule**
+- [x] **Step 1: Replace the no-chaining rule**
 
 Replace:
 
@@ -271,18 +279,18 @@ with the others — by the time there is a diff, the plan gate has passed or bee
 skipped.
 ```
 
-- [ ] **Step 2: Verify**
+- [x] **Step 2: Verify**
 
 ```bash
 cd /Users/karthik/Work/Projects/rkarthik/skills
 grep -q "Gates do not chain" skills/stage-gate/SKILL.md && echo "FAIL old rule present" || echo "PASS old rule removed"
-grep -q "verify and release" skills/stage-gate/SKILL.md && echo "PASS chaining documented"
-grep -q "stops the sequence" skills/stage-gate/SKILL.md && echo "PASS stop condition"
+grep -q 'then `--release`' skills/stage-gate/SKILL.md && echo "PASS chaining documented"
+grep -q "stop the sequence" skills/stage-gate/SKILL.md && echo "PASS stop condition"
 ```
 
 Expected: three `PASS` lines.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```
 git add skills/stage-gate/SKILL.md
@@ -302,7 +310,7 @@ git commit -m "fix(stage-gate): allow --dev and --release to chain"
 - Consumes: chaining from Task 3 (the `"verify and release"` prompt), the plan-path argument from Task 1.
 - Produces: nothing later tasks depend on except Task 5's character-count check.
 
-- [ ] **Step 1: Replace the `description` in `SKILL.md`**
+- [x] **Step 1: Replace the `description` in `SKILL.md`**
 
 The current description is 960 characters and lists skill vocabulary. Replace with prompts a user would actually type, keeping ≤1024:
 
@@ -322,7 +330,7 @@ description: >-
   GEMINI.md, or Copilot instructions. --release also bootstraps a new repo.
 ```
 
-- [ ] **Step 2: Update the gate-trigger block in `memory-hygiene.md`**
+- [x] **Step 2: Update the gate-trigger block in `memory-hygiene.md`**
 
 Replace **both** occurrences — the one under `### The gate-trigger block` and the one inside the target-shape template — of:
 
@@ -343,7 +351,7 @@ Run the `stage-gate` skill at each boundary, even when the work looks finished
 plan written → `--plan`, code written before push → `--dev`, merged → `--release`.
 ```
 
-- [ ] **Step 3: Add the indicating-prompts section to `README.md`**
+- [x] **Step 3: Add the indicating-prompts section to `README.md`**
 
 Insert after the existing plain-language trigger paragraph:
 
@@ -379,7 +387,7 @@ The plan gate takes a path, so `review the plan at docs/plans/x.md` targets a
 file directly rather than whatever is left in the conversation.
 ````
 
-- [ ] **Step 4: Verify**
+- [x] **Step 4: Verify**
 
 ```bash
 cd /Users/karthik/Work/Projects/rkarthik/skills
@@ -396,7 +404,7 @@ grep -c "do not gate your own work" skills/stage-gate/references/memory-hygiene.
 
 Expected: `PASS description` under 1024, `PASS readme section`, count of `2`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```
 git add skills/stage-gate/SKILL.md skills/stage-gate/references/memory-hygiene.md README.md
@@ -413,7 +421,7 @@ git commit -m "docs(stage-gate): rewrite trigger surfaces around real prompts"
 **Interfaces:**
 - Consumes: every preceding task.
 
-- [ ] **Step 1: Run the repo's verification suite**
+- [x] **Step 1: Run the repo's verification suite**
 
 ```bash
 cd /Users/karthik/Work/Projects/rkarthik/skills
@@ -444,7 +452,7 @@ grep -q "Prompts that load it" README.md && echo "  PASS defect 4 prompts" || ec
 
 Expected: every line `PASS`, no `FAIL`.
 
-- [ ] **Step 2: Check code fences balance in every touched file**
+- [x] **Step 2: Check code fences balance in every touched file**
 
 ```bash
 cd /Users/karthik/Work/Projects/rkarthik/skills
@@ -457,7 +465,7 @@ done
 
 Expected: all `PASS`.
 
-- [ ] **Step 3: Run the registry check**
+- [x] **Step 3: Run the registry check**
 
 ```bash
 cd /Users/karthik/Work/Projects/rkarthik/skills
@@ -466,15 +474,15 @@ npx skills add k97/skills --list
 
 Expected: `stage-gate`, `apple-appicon`, `discoverability` all listed.
 
-- [ ] **Step 4: Run `/validate-skills`**
+- [x] **Step 4: Run `/validate-skills`**
 
 Slash command, run manually in session. Expected: all checks PASS for `skills/stage-gate`.
 
-- [ ] **Step 5: Dogfood — gate this plan**
+- [x] **Step 5: Dogfood — gate this plan**
 
 Run `--plan` against this file. It must locate `docs/plans/2026-08-30-stage-gate-redesign.md` via the Task 1 discovery procedure, dispatch a fresh reviewer per Task 2, and name the artifact path in its output. If it gates the conversation instead of the file, Task 1 did not work.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```
 git add -A

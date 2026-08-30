@@ -16,10 +16,8 @@ capability and fail silently.
 | Init command | `/init` | varies | varies | none |
 | Argument passing | `argument-hint` frontmatter | positional or prose | prose | prose |
 
-The `AGENTS.md` column is not a short list: the format is stewarded by the
-Linux Foundation's Agentic AI Foundation and read by 28+ tools, Codex, Cursor,
-Antigravity, Amp, Jules and Factory among them. Treat `AGENTS.md` as the
-default for any agent not otherwise named here.
+`AGENTS.md` is the broadly adopted cross-tool format, not a two-or-three-tool
+niche. Treat it as the default for any agent not otherwise named here.
 
 Rows 1 and 2 are what Gate 3 writes to. Row 3 is what Gates 1 and 2 need — see
 [reviewer-separation.md](reviewer-separation.md). Rows 4–6 are how a human
@@ -57,13 +55,10 @@ An agent missing from the table should degrade, not break.
 
 Claude Code is the only column exercised end to end.
 
-The other three were checked against each vendor's current documentation on
-2026-08-30 — that verified the file names and locations, and corrected three
-things this table originally got wrong: Copilot's `applyTo:` requirement,
-Copilot's and Gemini's fallback to `AGENTS.md`, and the breadth of the
-`AGENTS.md` column. Documentation agreement is not a runtime test, though.
-Read those columns as *designed-for*, not proven; untested support is a claim,
-not a feature.
+The other three were checked against each vendor's own documentation, which
+confirms the file names and locations. Documentation agreement is not a runtime
+test: read those columns as *designed-for*, not proven. Untested support is a
+claim, not a feature.
 
 When a row turns out to be wrong, fix the row. Do not add a special case
 somewhere else — the whole point of this file is that there is one place to

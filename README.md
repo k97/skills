@@ -136,8 +136,6 @@ The feedback loop is the point: findings that keep recurring in `--dev` reviews 
 
 The preventive half of the guardrails belongs in your project's CLAUDE.md — the hygiene gate checks it is there and adds `.claude/rules/coding-guardrails.md` if not. The skill gates compliance at the boundaries; it does not replace always-on guidelines.
 
-The gate-trigger block is the one thing `--release` will not split out into a rules file. Linked rules are read on demand; only the memory file is loaded every session, so a trigger living anywhere else has to be looked up before it can fire — which makes it not a trigger. Four lines is the price of the gates running at all.
-
 ## Credits
 
 Assembled by [@k97](https://github.com/k97), drawing on:
