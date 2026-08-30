@@ -72,3 +72,5 @@ blocking findings) or **Trim first** (blocking findings listed in order).
 This gate reports; it does not edit. Findings that keep recurring across cycles
 are exactly what Gate 3 distills into the agent's rules location — note repeat
 offenders so the hygiene pass can pick them up.
+
+Who runs this gate: [reviewer-separation.md](reviewer-separation.md).

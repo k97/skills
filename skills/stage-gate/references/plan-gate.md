@@ -80,3 +80,5 @@ speculative scope, weak criteria), then the verdict:
   they block.
 
 Deliver the verdict and stop. Implementing is the next phase, not this gate.
+
+Who runs this gate: [reviewer-separation.md](reviewer-separation.md).

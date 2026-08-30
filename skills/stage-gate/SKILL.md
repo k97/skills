@@ -54,6 +54,9 @@ then check it: assumptions stated, interpretations surfaced, simpler path
 considered, every step traceable to the request and paired with a runnable
 verification.
 
+Run it through a fresh reviewer, not yourself — see
+[references/reviewer-separation.md](references/reviewer-separation.md).
+
 Verdict is **Ready to build** or **Needs answers**, with the blocking questions
 listed. Do not start implementing — the gate ends when the verdict is delivered.
 
@@ -65,6 +68,10 @@ Read [references/diff-review.md](references/diff-review.md). Establish the diff
 first (unstaged + staged; else the branch against `--base`, default: the repo's
 default branch), then review every hunk through the three lenses — Simplicity,
 Surgical, Verification. The reference carries the per-finding report format.
+
+Dispatch it to a fresh reviewer per
+[references/reviewer-separation.md](references/reviewer-separation.md); an
+author reviewing their own diff has every justification still loaded.
 
 Verdict is **Ship** or **Trim first**. This gate reports only; fixing the diff
 is a separate request.
