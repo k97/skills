@@ -44,11 +44,13 @@ One skill, three gates, each run at the boundary it is named after: after **plan
 ```bash
 /stage-gate --plan       # gate the plan in context before any code is written
 /stage-gate --dev        # review the diff before push or PR
-/stage-gate --release    # after merge: capture lessons, keep CLAUDE.md lean
+/stage-gate --release    # after merge: capture lessons, keep CLAUDE.md lean and armed
 /stage-gate              # no flag: infers the gate from git state and context
 ```
 
 It also triggers on plain language: *"review my plan"*, *"gate this diff"*, *"is this overcomplicated"*, *"post-merge hygiene"*, *"capture lessons"*, *"CLAUDE.md is too long"*.
+
+You should not have to remember any of that, though. `--release` installs a four-line **gate-trigger block** into your CLAUDE.md, naming the three boundaries — so the gates fire from where the work actually is, not from you recalling the right phrase at the moment the work looks done.
 
 ## Example prompts
 
@@ -101,6 +103,8 @@ There is deliberately no `--full`: the gates run at different moments in the cyc
 The feedback loop is the point: findings that keep recurring in `--dev` reviews are exactly what `--release` distills into `.claude/rules/`, and the hygiene pass keeps those rules lean enough that they stay loaded and get read. The `--release` gate is built to no-op fast (line-count triage first), so running it every cycle costs almost nothing.
 
 The preventive half of the guardrails belongs in your project's CLAUDE.md — the hygiene gate checks it is there and adds `.claude/rules/coding-guardrails.md` if not. The skill gates compliance at the boundaries; it does not replace always-on guidelines.
+
+The gate-trigger block is the one thing `--release` will not split out into a rules file. Linked rules are read on demand; only the memory file is loaded every session, so a trigger living anywhere else has to be looked up before it can fire — which makes it not a trigger. Four lines is the price of the gates running at all.
 
 ## Credits
 

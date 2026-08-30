@@ -30,9 +30,10 @@ Run this triage first so the gate stays cheap enough for every cycle:
 - memory file ≤100 lines,
 - a `## Verification` section exists,
 - the coding guardrails are present or linked (see below),
+- the gate-trigger block is in the memory file (see below),
 - nothing new to capture from this cycle.
 
-All four true → report "no action needed" with the line count, and stop.
+All five true → report "no action needed" with the line count, and stop.
 
 **No memory file at all?** Not a no-op — create the running agent's native file
 from the target shape below: discover the Verification commands, seed the
@@ -79,6 +80,27 @@ instead of a project rule.
   with those four guidelines and link it. This is the preventive half of Gates
   1 and 2 — without it the guidelines only exist at review time, after the
   mistakes are already made.
+- The gate-trigger block is present, verbatim from the section below. Without
+  it the gates only run when someone remembers to ask for them — and the three
+  boundaries are exactly where nobody does, since each one arrives the moment
+  the work is declared finished.
+
+### The gate-trigger block
+
+Four lines, in the memory file itself:
+
+```markdown
+## Gates
+
+Run the `stage-gate` skill at each boundary, even when the work looks finished:
+plan written → `--plan`, code written before push → `--dev`, merged → `--release`.
+```
+
+This block cannot be split out into a rules file. Linked rules are read on
+demand; only the memory file is loaded every session, and a trigger that has to
+be looked up first is not a trigger. It is the one exception to the "move it to
+the rules location" instinct — four lines is the price of the gates firing at
+all. If the project installed this skill under a different name, use that name.
 
 ## Refactor steps (only when >100 lines)
 
@@ -104,19 +126,21 @@ One-line description.
 - `command` — what it does (non-obvious only)
 
 ## Rules
-- [Topic](/.claude/rules/topic.md) — one line
+- [Topic](<rules-location>/topic.md) — one line
+
+## Gates
+Run the `stage-gate` skill at each boundary, even when the work looks finished:
+plan written → `--plan`, code written before push → `--dev`, merged → `--release`.
 
 ## Verification
 - `npm test` — run tests
 - `npm run lint` — check linting
 ```
 
-(Rules links point at whichever rules location the table above gives for the
-running agent.)
-
 ## Output
 
 Report: which memory file was targeted, lessons captured (file + one-line
 summary each), before/after line count, what moved where, what was deleted and
-why, and any contradiction awaiting the user's call. Then stop — no `git add`,
+why, whether the gate-trigger block was already present or added, and any
+contradiction awaiting the user's call. Then stop — no `git add`,
 no `git commit`.
