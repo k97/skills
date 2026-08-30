@@ -1,9 +1,32 @@
 # Gate 1 — plan review checklist
 
-Run against the plan in context (a plan-mode plan, a written proposal, or the
-user's own outline). The gate exists because assumptions are cheapest to fix
-before any code exists — every unstated assumption that survives this gate
-becomes a `--dev` finding or a rewrite later.
+Run against the plan the discovery procedure below resolves — a file under
+`docs/plans/`, a plan-mode plan, or a written proposal. The gate exists because
+assumptions are cheapest to fix before any code exists — every unstated
+assumption that survives this gate becomes a `--dev` finding or a rewrite later.
+
+## Finding the plan
+
+The plan is often a file, not a conversation turn. In priority order:
+
+1. **An explicit path** passed to the skill.
+2. **A plan file this conversation wrote or referenced** — take the path and
+   re-read the file.
+3. **The repo's convention** — `docs/plans/`, `docs/superpowers/plans/`,
+   `specs/`, or wherever the memory file says plans live. Newest file matching
+   the work in hand; if several match, ask which.
+4. **A plan in the conversation** — a plan-mode plan or written proposal. Last
+   resort, not first.
+5. **Nothing found** → say so and stop. There is nothing to gate.
+
+Two rules outrank that ordering:
+
+- **A file beats the conversation's copy of it.** Always re-read from disk. If
+  context holds only a summary, that is the strongest reason to go to the file:
+  summaries smooth over exactly the hedges and half-decisions this gate looks
+  for, so gating one produces a confident false pass.
+- **Name the artifact you gated, with its path,** in the output. A gate pointed
+  at the wrong thing should be visible in one line.
 
 ## Checks
 

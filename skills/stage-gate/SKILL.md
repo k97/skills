@@ -13,7 +13,7 @@ description: >-
   init-generated bloat. Use for "review my plan", "gate this diff", "is this
   overcomplicated", "post-merge hygiene", "capture lessons", "CLAUDE.md is too long",
   "AGENTS.md is too long", "set up CLAUDE.md for this repo".
-argument-hint: "[--plan|--dev|--release] [--base <ref>]"
+argument-hint: "[--plan|--dev|--release] [<plan-path>] [--base <ref>]"
 ---
 
 # stage-gate
@@ -35,7 +35,7 @@ An explicit flag wins. With no flag, infer from state — then say which gate yo
 picked and why before running it:
 
 - uncommitted or unpushed diff → `--dev`
-- no diff, but a plan in the conversation → `--plan`
+- no diff, but a plan in the conversation or a recent plan file → `--plan`
 - clean tree on the default branch → `--release`
 
 Gates do not chain, and there is no `--full`: each belongs to a different moment
@@ -48,8 +48,9 @@ directory is the user's project.
 
 **After planning, before any code.**
 
-Read [references/plan-gate.md](references/plan-gate.md) and check the plan in
-context against it: assumptions stated, interpretations surfaced, simpler path
+Read [references/plan-gate.md](references/plan-gate.md), locate the plan by the
+discovery procedure it carries — it is often a file, not a conversation turn —
+then check it: assumptions stated, interpretations surfaced, simpler path
 considered, every step traceable to the request and paired with a runnable
 verification.
 
