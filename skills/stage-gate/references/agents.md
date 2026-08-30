@@ -7,18 +7,28 @@ capability and fail silently.
 
 ## The matrix
 
-| Capability | Claude Code | Codex · Cursor · Antigravity | Gemini CLI | GitHub Copilot |
+| Capability | Claude Code | `AGENTS.md` agents | Gemini CLI | GitHub Copilot |
 |---|---|---|---|---|
-| Auto-loaded memory file | `CLAUDE.md` | `AGENTS.md` | `GEMINI.md` (reads `AGENTS.md` if configured) | `.github/copilot-instructions.md` |
-| On-demand rules location | `.claude/rules/` | files linked from the memory file (e.g. `.agents/rules/`) | files linked from the memory file | `.github/instructions/*.instructions.md` |
+| Auto-loaded memory file | `CLAUDE.md` | `AGENTS.md`; in monorepos the nearest one to the edited file wins | `GEMINI.md`; also reads `AGENTS.md` when `context.fileName` in `settings.json` lists it, but `GEMINI.md` wins if both exist | `.github/copilot-instructions.md`; also reads `AGENTS.md`, at lower priority |
+| On-demand rules location | `.claude/rules/` | files linked from the memory file (e.g. `.agents/rules/`) | files imported into the memory file with `@file.md` | `.github/instructions/*.instructions.md` — **each needs `applyTo:` frontmatter with a glob, or it is ignored** |
 | Fresh reviewer | subagent dispatch | subagent or task dispatch where available | varies | generally none |
 | Invocation | `/stage-gate --plan` | prose, or the host's own skill syntax | prose | prose |
 | Init command | `/init` | varies | varies | none |
 | Argument passing | `argument-hint` frontmatter | positional or prose | prose | prose |
 
+The `AGENTS.md` column is not a short list: the format is stewarded by the
+Linux Foundation's Agentic AI Foundation and read by 28+ tools, Codex, Cursor,
+Antigravity, Amp, Jules and Factory among them. Treat `AGENTS.md` as the
+default for any agent not otherwise named here.
+
 Rows 1 and 2 are what Gate 3 writes to. Row 3 is what Gates 1 and 2 need — see
 [reviewer-separation.md](reviewer-separation.md). Rows 4–6 are how a human
 reaches the skill at all.
+
+**Copilot's rules location has a trap.** A file written to
+`.github/instructions/` without `applyTo:` frontmatter is silently ignored — no
+error, no effect. When Gate 3 splits rules out there, every file it creates
+must carry a glob, e.g. `applyTo: "**"` for a rule that always applies.
 
 ## Detect, do not assume
 
@@ -45,9 +55,15 @@ An agent missing from the table should degrade, not break.
 
 ## Verified vs designed-for
 
-Claude Code is the only column exercised end to end. The others are written
-from each agent's documented behaviour and should be read as *designed-for*,
-not proven. Untested support is a claim, not a feature.
+Claude Code is the only column exercised end to end.
+
+The other three were checked against each vendor's current documentation on
+2026-08-30 — that verified the file names and locations, and corrected three
+things this table originally got wrong: Copilot's `applyTo:` requirement,
+Copilot's and Gemini's fallback to `AGENTS.md`, and the breadth of the
+`AGENTS.md` column. Documentation agreement is not a runtime test, though.
+Read those columns as *designed-for*, not proven; untested support is a claim,
+not a feature.
 
 When a row turns out to be wrong, fix the row. Do not add a special case
 somewhere else — the whole point of this file is that there is one place to
