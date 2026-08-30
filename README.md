@@ -50,6 +50,36 @@ One skill, three gates, each run at the boundary it is named after: after **plan
 
 It also triggers on plain language: *"review my plan"*, *"gate this diff"*, *"is this overcomplicated"*, *"post-merge hygiene"*, *"capture lessons"*, *"CLAUDE.md is too long"*.
 
+### Prompts that load it
+
+Copy-paste, or say something close. You do not need the flags.
+
+**Gate the plan — after planning, before code**
+
+> Review my plan before we build.
+> Check `docs/plans/2026-08-30-csv-export.md` — anything I haven't stated?
+> What assumptions is this plan resting on?
+
+**Gate the diff — after coding, before push**
+
+> Gate this diff before I push.
+> Is this overcomplicated?
+> Did I touch more than the request needed?
+
+**Hygiene — after merge or release**
+
+> Verify and release.  *(runs `--dev` then `--release`)*
+> Wrap up this feature.
+> Capture what this cycle taught us.
+> CLAUDE.md is getting long.
+
+**Day zero, on a fresh repo**
+
+> Set up CLAUDE.md for this repo.  *(run right after `/init`)*
+
+The plan gate takes a path, so *"review the plan at `docs/plans/x.md`"* targets a
+file directly rather than whatever is left in the conversation.
+
 You should not have to remember any of that, though. `--release` installs a four-line **gate-trigger block** into your CLAUDE.md, naming the three boundaries — so the gates fire from where the work actually is, not from you recalling the right phrase at the moment the work looks done.
 
 ## Example prompts

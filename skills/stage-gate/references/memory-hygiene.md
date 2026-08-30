@@ -92,7 +92,8 @@ Four lines, in the memory file itself:
 ```markdown
 ## Gates
 
-Run the `stage-gate` skill at each boundary, even when the work looks finished:
+Run the `stage-gate` skill at each boundary, even when the work looks finished
+— dispatch a fresh reviewer, do not gate your own work:
 plan written → `--plan`, code written before push → `--dev`, merged → `--release`.
 ```
 
@@ -129,7 +130,8 @@ One-line description.
 - [Topic](<rules-location>/topic.md) — one line
 
 ## Gates
-Run the `stage-gate` skill at each boundary, even when the work looks finished:
+Run the `stage-gate` skill at each boundary, even when the work looks finished
+— dispatch a fresh reviewer, do not gate your own work:
 plan written → `--plan`, code written before push → `--dev`, merged → `--release`.
 
 ## Verification

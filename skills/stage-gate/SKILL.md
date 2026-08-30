@@ -1,18 +1,18 @@
 ---
 name: stage-gate
 description: >-
-  Quality gates for the three boundaries of a feature cycle. Run --plan once a plan
-  exists and no code is written yet (gates it for unstated assumptions, ambiguity,
-  unverifiable success criteria); --dev once code is written but not pushed (reviews
-  the diff for overcomplication and non-surgical changes); --release once a branch is
-  merged or released (captures lessons into rules, keeps the agent memory file lean,
-  installs the always-on gate triggers). Run each gate at its boundary even when the
-  work looks finished. Agent-agnostic: targets CLAUDE.md, AGENTS.md, GEMINI.md, or
-  Copilot instructions — Claude Code, Codex, Cursor, Copilot, Gemini CLI, Antigravity.
-  --release also bootstraps a new repo: creates the memory file if missing, prunes
-  init-generated bloat. Use for "review my plan", "gate this diff", "is this
-  overcomplicated", "post-merge hygiene", "capture lessons", "CLAUDE.md is too long",
-  "AGENTS.md is too long", "set up CLAUDE.md for this repo".
+  Quality gates for the three boundaries of a feature cycle, run by a fresh
+  reviewer rather than the author. --plan gates a written plan — in the
+  conversation or a file under docs/plans or specs — for unstated assumptions,
+  ambiguity, and unverifiable success criteria. --dev reviews the diff for
+  overcomplication and non-surgical changes. --release captures lessons into
+  rules and keeps the agent memory file lean. --dev and --release may run in
+  sequence. Use when the user says "review my plan", "check the plan before we
+  build", "any assumptions I missed", "gate this diff", "review before I push",
+  "is this overcomplicated", "did I touch more than I needed", "verify and
+  release", "wrap up this feature", "capture lessons", "CLAUDE.md is too long",
+  or "set up CLAUDE.md for this repo". Agent-agnostic: CLAUDE.md, AGENTS.md,
+  GEMINI.md, or Copilot instructions. --release also bootstraps a new repo.
 argument-hint: "[--plan|--dev|--release] [<plan-path>] [--base <ref>]"
 ---
 
