@@ -27,7 +27,9 @@ same breath as reporting them.
 
 ## Fallback — cold re-read
 
-Where subagent dispatch is unavailable, degrade explicitly rather than quietly:
+Row 3 of [agents.md](agents.md) says which hosts can dispatch; detection wins
+over the table, so attempt dispatch before concluding it is unavailable. Where
+it is unavailable or fails, degrade explicitly rather than quietly:
 
 1. Re-read the artifact from disk (or from `git diff`) as the source of truth.
    Never gate the conversation's copy, and never gate a summary.

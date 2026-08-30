@@ -87,8 +87,8 @@ is a separate request.
 
 Read [references/memory-hygiene.md](references/memory-hygiene.md). It targets the
 repo's agent memory file — `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, or Copilot
-instructions, whichever the repo uses (detection table in the reference). Two
-jobs, in order:
+instructions, whichever the repo uses (matrix and detection rules in
+[references/agents.md](references/agents.md)). Two jobs, in order:
 
 1. **Capture lessons.** Recurring findings from this cycle's `--dev` reviews, and
    corrections the user made during the work, become rules in the agent's rules
@@ -110,9 +110,9 @@ always-on block intact → report "no action needed" and stop. That is what make
 running it every cycle affordable.
 
 It also doubles as the day-zero bootstrap: no memory file → create one from the
-reference's target shape. Run it once after your agent's init command (Claude
-Code's `/init` and equivalents) — it prunes the generated file's inferable
-content and seeds the always-on block from the start.
+reference's target shape. Run it once after your agent's init command — it
+prunes the generated file's inferable content and seeds the always-on block
+from the start.
 
 **Edit the working tree and stop** — no `git add`, no `git commit`. Review and
 commit belong to the user.

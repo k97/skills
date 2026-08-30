@@ -9,19 +9,12 @@ This is the only gate that writes — working tree only, never commit.
 This gate is agent-agnostic: it targets whichever memory file the repo uses.
 "CLAUDE.md" elsewhere in this skill means "the memory file" in the general case.
 
-| Agent | Memory file | Rules / split-out location |
-|---|---|---|
-| Claude Code | `CLAUDE.md` | `.claude/rules/` |
-| Codex, Cursor, Antigravity, most others | `AGENTS.md` | files linked from it (e.g. `.agents/rules/`) |
-| Gemini CLI | `GEMINI.md` (reads `AGENTS.md` if configured) | files linked from it |
-| GitHub Copilot | `.github/copilot-instructions.md` | `.github/instructions/*.instructions.md` |
+Resolve the memory file and its rules location from the matrix and detection
+rules in [agents.md](agents.md) — rows 1 and 2 are this gate's. Detection wins
+over the table whenever they disagree.
 
-Detection: prefer the running agent's native file; if only one memory file
-exists, use it. Multi-agent repos often keep a canonical `AGENTS.md` with
-symlinks (`CLAUDE.md → AGENTS.md`) — always edit the canonical file, never a
-symlink, and never fork the content into two diverging copies. The thresholds,
-jobs, and refactor steps below apply identically whichever file it is; write
-split-out rules to that agent's rules location from the table.
+The thresholds, jobs, and refactor steps below apply identically whichever file
+it resolves to; write split-out rules to the rules location it gives.
 
 ## Fast no-op check
 
@@ -39,7 +32,7 @@ All five true → report "no action needed" with the line count, and stop.
 from the target shape below: discover the Verification commands, seed the
 guardrails rule, and stop there (nothing to group, nothing to delete). This
 makes `--release` the day-zero bootstrap for a new repo. Run it once right
-after your agent's init command (Claude Code's `/init` and equivalents), too —
+after your agent's init command (row 5 of [agents.md](agents.md)), too —
 auto-generated memory files are full of exactly the content the deletion list
 prunes.
 
@@ -58,8 +51,8 @@ infer from the codebase, and anything that only mattered this once.
 
 If a lesson is about a tool or framework rather than this project, and would
 apply in 2+ projects, suggest a global skill (`~/.claude/skills/`,
-`~/.agents/skills/`, or your agent's equivalent) with a name and description
-instead of a project rule.
+`~/.agents/skills/`, or wherever the host keeps them) with a name and
+description instead of a project rule.
 
 ## Job 2 — memory file triage
 
