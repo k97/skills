@@ -38,8 +38,13 @@ picked and why before running it:
 - no diff, but a plan in the conversation or a recent plan file → `--plan`
 - clean tree on the default branch → `--release`
 
-Gates do not chain, and there is no `--full`: each belongs to a different moment
-in the cycle, so run only the one matching where the work is.
+Gates may be requested together when one request spans two boundaries —
+"verify and release" is `--dev` then `--release`. Run them in cycle order, each
+as its own gate with its own artifact, reviewer, and verdict; never merge the
+reports. A blocking `--dev` verdict stops the sequence: report it, fix first,
+release after. There is still no `--full`, because `--plan` never co-occurs
+with the others — by the time there is a diff, the plan gate has passed or been
+skipped.
 
 Reference paths below resolve against this skill's own directory; the working
 directory is the user's project.
