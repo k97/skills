@@ -14,9 +14,7 @@ Multi-skill collection built on the [Agent Skills](https://agentskills.io) stand
 
 ## Gates
 
-Run the `stage-gate` skill at each boundary, even when the work looks finished
-— dispatch a fresh reviewer, do not gate your own work:
-plan written → `--plan`, code written before push → `--dev`, merged → `--release`.
+Run the `stage-gate` skill at each boundary, even when the work looks finished — dispatch a fresh reviewer, do not gate your own work: plan written → `--plan`, code written before push → `--dev`, merged → `--release`.
 
 ## Verification
 

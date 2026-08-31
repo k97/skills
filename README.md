@@ -3,7 +3,7 @@
 Agent Skills for AI coding agents, built on the [Agent Skills](https://agentskills.io) open standard — installable in Claude Code, Cursor, Codex, Copilot, Gemini CLI, and ~20 other agents.
 
 | Skill | What it does |
-|---|---|
+| --- | --- |
 | [**`stage-gate`**](skills/stage-gate/) | Quality gates at the three feature-cycle boundaries: plan review (`--plan`), diff review (`--dev`), post-merge hygiene (`--release`). Karpathy-style guardrails + memory-file (CLAUDE.md / AGENTS.md) progressive disclosure. Agent-agnostic. |
 | [**`apple-appicon`**](skills/apple-appicon/) | Apple platform app icons (iOS, iPadOS, macOS, visionOS) from one source image, HIG as the north star. Validates the source, then generates appiconsets, `.icns`, visionOS stacks, and Tauri's full set with the dock-icon margin fix. Agent-agnostic. |
 | [**`discoverability`**](skills/discoverability/) | Technical SEO audit → GEO (AI-citation) review → applies the fixes in your codebase. Ships scripts that trace redirect loops and lint JSON-LD. |
@@ -49,7 +49,7 @@ One skill, three gates, each run at the boundary it is named after: after **plan
 /stage-gate                           # no flag: infers the gate from git state and context
 ```
 
-It also triggers on plain language: *"review my plan"*, *"gate this diff"*, *"is this overcomplicated"*, *"post-merge hygiene"*, *"capture lessons"*, *"CLAUDE.md is too long"*.
+It also triggers on plain language: _"review my plan"_, _"gate this diff"_, _"is this overcomplicated"_, _"post-merge hygiene"_, _"capture lessons"_, _"CLAUDE.md is too long"_.
 
 ### Prompts that load it
 
@@ -57,29 +57,21 @@ Copy-paste, or say something close. You do not need the flags.
 
 **Gate the plan — after planning, before code**
 
-> Review my plan before we build.
-> Check `docs/plans/2026-08-30-csv-export.md` — anything I haven't stated?
-> What assumptions is this plan resting on?
+> Review my plan before we build. Check `docs/plans/2026-08-30-csv-export.md` — anything I haven't stated? What assumptions is this plan resting on?
 
 **Gate the diff — after coding, before push**
 
-> Gate this diff before I push.
-> Is this overcomplicated?
-> Did I touch more than the request needed?
+> Gate this diff before I push. Is this overcomplicated? Did I touch more than the request needed?
 
 **Hygiene — after merge or release**
 
-> Verify and release.  *(runs `--dev` then `--release`)*
-> Wrap up this feature.
-> Capture what this cycle taught us.
-> CLAUDE.md is getting long.
+> Verify and release. _(runs `--dev` then `--release`)_ Wrap up this feature. Capture what this cycle taught us. CLAUDE.md is getting long.
 
 **Day zero, on a fresh repo**
 
-> Set up CLAUDE.md for this repo.  *(run right after `/init`)*
+> Set up CLAUDE.md for this repo. _(run right after `/init`)_
 
-The plan gate takes a path, so *"review the plan at `docs/plans/x.md`"* targets a
-file directly rather than whatever is left in the conversation.
+The plan gate takes a path, so _"review the plan at `docs/plans/x.md`"_ targets a file directly rather than whatever is left in the conversation.
 
 You should not have to remember any of that, though. `--release` installs a four-line **gate-trigger block** into your CLAUDE.md, naming the three boundaries — so the gates fire from where the work actually is, not from you recalling the right phrase at the moment the work looks done.
 
@@ -120,7 +112,7 @@ One feature cycle, three gates:
 ## The three gates
 
 | Flag | Gate | When | Writes |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | `--plan` | Plan review — assumptions surfaced, scope traceable, success criteria runnable | after planning, before code | no |
 | `--dev` | Diff review — Simplicity / Surgical / Verification lenses over every hunk | before push or PR | no |
 | `--release` | Hygiene — capture the cycle's lessons into `.claude/rules/`, keep CLAUDE.md lean | after merge or release | yes |
@@ -166,7 +158,7 @@ Platform-wise it degrades explicitly rather than failing mid-run: invoked on Lin
 /apple-appicon ./logo.png --platform macos --out ./out # one platform, custom destination
 ```
 
-It also triggers on plain language: *"generate app icons from this image"*, *"make an .icns"*, *"our Tauri dock icon looks huge"*, *"App Store icon"*.
+It also triggers on plain language: _"generate app icons from this image"_, _"make an .icns"_, _"our Tauri dock icon looks huge"_, _"App Store icon"_.
 
 Example prompts:
 
@@ -179,7 +171,7 @@ Example prompts:
 ## The workflow
 
 | Step | What happens |
-|---|---|
+| --- | --- |
 | **Validate** | `scripts/validate-source.sh` gates the source: square aspect, ≥1024 px, alpha channel, sRGB/P3, 8-bit. Hard failures stop the run with copy-paste fixes (centre-crop vs transparent pad). |
 | **Look** | The agent views the artwork and flags HIG problems a script can't see: pre-rounded corners (double-masking), thin lines that die at 16 px, text, photos. |
 | **Generate** | Per platform: `AppIcon.appiconset` (1024 single-size, dark/tinted variants), `.icns` via `iconutil`, visionOS `solidimagestack`, or `tauri icon` plus a rebuilt margined `.icns`. |
@@ -220,7 +212,7 @@ Assembled by [@k97](https://github.com/k97), drawing on:
 
 Takes a web project from **audit → AI-citation review → applied fixes** in one workflow. Built for Next.js / TypeScript by default, and adapts to whatever framework it finds.
 
-Unlike prompt-only SEO skills, it ships **three dependency-free scripts** so the audit produces evidence rather than guesses: a live redirect-chain tracer, a JSON-LD linter, and a metadata auditor that checks canonical hosts against the host your site *actually serves*.
+Unlike prompt-only SEO skills, it ships **three dependency-free scripts** so the audit produces evidence rather than guesses: a live redirect-chain tracer, a JSON-LD linter, and a metadata auditor that checks canonical hosts against the host your site _actually serves_.
 
 ## Usage
 
@@ -232,7 +224,7 @@ Unlike prompt-only SEO skills, it ships **three dependency-free scripts** so the
 /discoverability ./my-app --routes /,/pricing      # narrow the scope
 ```
 
-It also triggers on plain language: *"run an SEO audit"*, *"why aren't we cited by AI"*, *"improve our schema"*, *"we have a redirect loop"*, *"www vs apex"*.
+It also triggers on plain language: _"run an SEO audit"_, _"why aren't we cited by AI"_, _"improve our schema"_, _"we have a redirect loop"_, _"www vs apex"_.
 
 Example prompts:
 
@@ -247,11 +239,11 @@ If you keep a product brief at `.agents/product-marketing.md` or `.claude/produc
 ## The three phases
 
 | Phase | Flag | What it does | Touches code |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | **1 · Technical audit** | `--audit` | Metadata, robots, sitemap, JSON-LD, on-page, canonical chains — plus a live redirect trace across apex, www, and your real routes. Findings grouped by severity with a prioritised plan. | no |
 | **2 · GEO review** | `--geo` | Whether ChatGPT, Perplexity, Gemini, and Claude can reach, parse, and cite you. Bot access, schema completeness, content tactics. | no |
 | **3 · Fix** | `--fix` | Applies the findings in your codebase, then re-runs the scripts to verify. Leaves the commit to you. | yes |
-| **All three** | `--full` *(default)* | 1 → 2 → 3. | yes |
+| **All three** | `--full` _(default)_ | 1 → 2 → 3. | yes |
 
 ## The scripts
 
@@ -282,7 +274,7 @@ Each exits non-zero on an error-level finding, so they drop straight into CI. Th
 
 The most common way to take a site fully down on deploy day is an app-level host redirect (`www`↔apex, `http`↔`https`, trailing slash) that duplicates one your hosting platform already performs. The two ping-pong, and every URL returns `ERR_TOO_MANY_REDIRECTS`.
 
-It is invisible from source, because neither redirect is wrong on its own. `redirect-trace.sh` finds it, and the skill's hard rule is to *remove* the app-level redirect rather than add another.
+It is invisible from source, because neither redirect is wrong on its own. `redirect-trace.sh` finds it, and the skill's hard rule is to _remove_ the app-level redirect rather than add another.
 
 ## A note on GEO claims
 
@@ -338,7 +330,7 @@ The registry CLI walks root `SKILL.md`, `skills/<name>/SKILL.md`, or `skills/<ca
 Skills are structured around [progressive disclosure](https://agentskills.io), so each costs almost nothing until you use it:
 
 | Layer | When it loads | Cost |
-|---|---|---|
+| --- | --- | --- |
 | `description` | every session, for every installed skill | ~96 tokens |
 | `SKILL.md` body | on invocation, then stays all session | ~1,285 tokens |
 | `references/*.md` | only when a phase reads one | 0 until read |
