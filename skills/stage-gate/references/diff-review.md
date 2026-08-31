@@ -13,6 +13,10 @@ user's request.**
    `--base` argument, else the repo's default branch (`git remote show origin`
    or the obvious `main`/`master`).
 3. No diff anywhere → say so and stop; there is nothing to gate.
+4. Pin it. Record the commit you resolved (`git rev-parse HEAD`) and review
+   against that, not against a branch that may move while you read. Report the
+   ref in the output — a verdict on a tree that no longer exists is worse than
+   no verdict.
 
 Read every hunk. A stat summary is not a review.
 

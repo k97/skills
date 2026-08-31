@@ -42,10 +42,11 @@ One skill, three gates, each run at the boundary it is named after: after **plan
 ## Usage
 
 ```bash
-/stage-gate --plan       # gate the plan in context before any code is written
-/stage-gate --dev        # review the diff before push or PR
-/stage-gate --release    # after merge: capture lessons, keep CLAUDE.md lean and armed
-/stage-gate              # no flag: infers the gate from git state and context
+/stage-gate --plan                    # gate the plan before any code is written
+/stage-gate --plan docs/plans/x.md    # ...or point it at a specific plan file
+/stage-gate --dev                     # review the diff before push or PR
+/stage-gate --release                 # after merge: capture lessons, keep CLAUDE.md lean and armed
+/stage-gate                           # no flag: infers the gate from git state and context
 ```
 
 It also triggers on plain language: *"review my plan"*, *"gate this diff"*, *"is this overcomplicated"*, *"post-merge hygiene"*, *"capture lessons"*, *"CLAUDE.md is too long"*.
