@@ -3,6 +3,9 @@ name: discoverability
 description: >-
   Technical SEO audit, GEO (AI-citation) review, and in-codebase SEO fixes for web projects. Use for SEO audit, GEO review, AI search optimisation or optimization, "not cited by AI", schema, JSON-LD, structured data, technical SEO, not ranking, redirect loop, ERR_TOO_MANY_REDIRECTS, canonical host, www vs apex, sitemap, robots.txt, meta tags. Scope with --audit, --geo, --fix, --full.
 argument-hint: "[url|path] [--audit|--geo|--fix|--full] [--routes /a,/b]"
+source: https://github.com/k97/skills/tree/main/skills/discoverability
+metadata:
+  version: "0.1.0"
 ---
 
 # discoverability

@@ -3,6 +3,9 @@ name: stage-gate
 description: >-
   Quality gates for the three boundaries of a feature cycle, run by a fresh reviewer rather than the author. --plan gates a written plan — in the conversation or a file under docs/plans or specs — for unstated assumptions, ambiguity, and unverifiable success criteria. --dev reviews the diff for overcomplication and non-surgical changes. --release captures lessons into rules and keeps the agent memory file lean. --dev and --release may run in sequence. Use when the user says "review my plan", "check the plan before we build", "any assumptions I missed", "gate this diff", "review before I push", "is this overcomplicated", "did I touch more than I needed", "verify and release", "wrap up this feature", "capture lessons", "CLAUDE.md is too long", or "set up CLAUDE.md for this repo". Agent-agnostic: CLAUDE.md, AGENTS.md, GEMINI.md, or Copilot instructions. --release also bootstraps a new repo.
 argument-hint: "[--plan|--dev|--release] [<plan-path>] [--base <ref>]"
+source: https://github.com/k97/skills/tree/main/skills/stage-gate
+metadata:
+  version: "0.2.0"
 ---
 
 # stage-gate
