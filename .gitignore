@@ -3,6 +3,9 @@
 # skills CLI symlink to ~/.agents/skills (absolute path, machine-specific)
 .claude/skills
 
+# Local planning docs — kept on disk, not shipped in a skills repo
+docs/plans/
+
 # OS / editor cruft
 .DS_Store
 *.swp

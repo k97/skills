@@ -10,6 +10,13 @@ Multi-skill collection built on the [Agent Skills](https://agentskills.io) stand
 ## Rules
 
 - [Coding guardrails](.claude/rules/coding-guardrails.md) — think before coding, simplicity first, surgical changes, goal-driven execution
+- [Skill authoring](.claude/rules/skill-authoring.md) — SKILL.md is charged every invocation, references are not; one fact one file
+
+## Gates
+
+Run the `stage-gate` skill at each boundary, even when the work looks finished
+— dispatch a fresh reviewer, do not gate your own work:
+plan written → `--plan`, code written before push → `--dev`, merged → `--release`.
 
 ## Verification
 
