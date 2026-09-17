@@ -7,6 +7,7 @@ Agent Skills for AI coding agents, built on the [Agent Skills](https://agentskil
 | [**`stage-gate`**](skills/stage-gate/) | Quality gates at the three feature-cycle boundaries: plan review (`--plan`), diff review (`--dev`), post-merge hygiene (`--release`). Karpathy-style guardrails + memory-file (CLAUDE.md / AGENTS.md) progressive disclosure. Agent-agnostic. |
 | [**`apple-appicon`**](skills/apple-appicon/) | Apple platform app icons (iOS, iPadOS, macOS, visionOS) from one source image, HIG as the north star. Validates the source, then generates appiconsets, `.icns`, visionOS stacks, and Tauri's full set with the dock-icon margin fix. Agent-agnostic. |
 | [**`discoverability`**](skills/discoverability/) | Technical SEO audit → GEO (AI-citation) review → applies the fixes in your codebase. Ships scripts that trace redirect loops and lint JSON-LD. |
+| [**`macos-perf`**](skills/macos-perf/) | Benchmark and review one macOS app against Apple's published thresholds — hangs, responsiveness, launch, CPU, memory, energy — with an optional baseline for regression checks. Careful about which Apple guidance is macOS and which is iOS-only. |
 
 ## Install
 
@@ -15,7 +16,7 @@ npx skills add k97/skills --list                  # see what's in here
 npx skills add k97/skills --skill stage-gate      # install one skill
 ```
 
-`skills add` takes the **repo path**, not the skill name. Requirements vary per skill; `stage-gate` needs only `git`. `apple-appicon` is fully native on macOS (Xcode Command Line Tools: `sips`, `iconutil`, `swift`); on Linux/Windows it says so up front and falls back to ImageMagick 7 + Tauri's own cross-platform CLI where it can. `discoverability` needs `curl` and Node 18+, with nothing to `npm install`.
+`skills add` takes the **repo path**, not the skill name. Requirements vary per skill; `stage-gate` needs only `git`. `apple-appicon` is fully native on macOS (Xcode Command Line Tools: `sips`, `iconutil`, `swift`); on Linux/Windows it says so up front and falls back to ImageMagick 7 + Tauri's own cross-platform CLI where it can. `discoverability` needs `curl` and Node 18+, with nothing to `npm install`. `macos-perf` is macOS-only by nature; the command-line half needs nothing installed, while Instruments, `xctrace` and XCTest metrics need full Xcode rather than the Command Line Tools, and the skill checks before promising a trace.
 
 > **Claude Code, in a project with no `.claude/` directory yet:** the CLI writes the canonical copy to `.agents/skills/` and skips the `.claude/skills/` symlink, even though it reports "Installing to: … Claude Code". Run `mkdir -p .claude` first, or install globally with `-g`, and the symlink appears as expected.
 
@@ -293,6 +294,70 @@ Assembled and extended by [@k97](https://github.com/k97), drawing on:
 
 ---
 
+# macos-perf
+
+Points at **one app** and answers whether it is fast enough, against **Apple's own published thresholds** — then says what to fix first. Not whole-machine triage: the subject is an app you are building or one you are evaluating.
+
+It exists because the numbers are the easy part and the judgement is not. Apple publishes actual thresholds — 250 ms before a stall counts as a hang, 500 ms before it is a "proper" one, 5 ms of main-thread work during continuous interaction, one idle wakeup per second — and most profiling advice quotes none of them. Worse, much of what circulates as "Apple's performance guidance" is iOS-only and silently wrong on a Mac: the 400 ms launch target is an iOS figure justified by the iOS launch animation; jetsam, memory limits and low-memory warnings do not exist on macOS at all; the Organizer hitch-rate scale is iOS and iPadOS only. This skill carries the thresholds that do apply and names the ones that do not.
+
+## Usage
+
+```bash
+/macos-perf MyApp                # full review: hangs, CPU, memory, energy
+/macos-perf MyApp --hang         # beachballs: is the main thread busy or blocked
+/macos-perf MyApp --cpu          # where the CPU goes, and whether that work is needed
+/macos-perf MyApp --launch       # time to first frame
+/macos-perf MyApp --memory       # footprint, growth, leaked vs abandoned
+/macos-perf MyApp --energy       # wakeups, QoS, sleep assertions, thermals
+/macos-perf MyApp --baseline     # record numbers, or compare against a recorded set
+```
+
+Plain language works: _"profile my app"_, _"why does my app beachball"_, _"is my app leaking"_, _"did this release get slower"_, _"my Mac app drains battery"_, _"performance review before I ship"_.
+
+### Prompts that load it
+
+> My SwiftUI app beachballs for about a second whenever you open the library view. I can see it in Instruments but the Time Profiler stacks are almost empty during the freeze — what am I missing?
+
+> Tauri app, memory goes from 180MB to about 900MB over a day of use and never comes back. `leaks` says nothing is leaking. Is that actually fine?
+
+> We shipped 2.1 last week and a few users say it feels slower than 2.0. How would I establish whether that's real before I start changing things?
+
+## The workflow
+
+Establish the subject, make the measurement valid, measure, then judge.
+
+| Step | What happens |
+| --- | --- |
+| Subject | Detect Xcode / SwiftPM / Tauri / Electron; enumerate the app's processes, because the one doing the work is rarely the one on the bundle |
+| Validity | Release build, Apple's accuracy settings, repetitions with the first discarded, thermal state checked before **and after** |
+| Measure | Hangs first (Apple's own priority), then CPU, memory, energy |
+| Review | Numbers judged against Apple's thresholds, findings ranked by impact, optional baseline for next time |
+
+## What it gets right that the folklore doesn't
+
+- **Hangs first.** Apple's guidance, not a preference: fixing hangs tends to fix rendering stutter as a side effect.
+- **Busy vs. blocked main thread** is the triage split that decides the tool. Empty stacks during a freeze mean _blocked_, and a CPU profiler will never show you why — that needs Thread State Trace.
+- **Prefer CPU Profiler to Time Profiler.** Apple's current guidance: Time Profiler samples on a timer and over-represents periodic work, and under-weights faster cores — which matters on Apple Silicon.
+- **A leak and abandoned memory are different bugs.** `leaks` only finds unreachable memory. Memory that climbs forever while `leaks` reports nothing is _abandoned_, and only generational analysis finds it.
+- **`instruments` is gone** — deprecated in Xcode 12 and absent from current Xcode. `xcrun xctrace` replaces it, and its documentation is `man xctrace`, not a web page.
+- **Apple's docs are readable.** Appending `.md` to any `developer.apple.com/documentation/` URL returns the article source plus a per-platform `availability` block — which is how you check whether an API exists on macOS before recommending it.
+
+## What it will not do
+
+Measure and review, not remediate: it produces numbers, judges them, ranks what to fix, and stops. It will not tune the machine to flatter a benchmark, and it refuses a baseline comparison whose conditions don't match rather than reporting a regression that is really a different laptop.
+
+## Credits
+
+Rebuilt by [@k97](https://github.com/k97), grounded in Apple's own material:
+
+- **[Improving app responsiveness](https://developer.apple.com/documentation/xcode/improving-app-responsiveness)**, **[Understanding hangs in your app](https://developer.apple.com/documentation/xcode/understanding-hangs-in-your-app)**, **[Understanding hitches in your app](https://developer.apple.com/documentation/xcode/understanding-hitches-in-your-app)** — the responsiveness thresholds
+- **[Writing and running performance tests](https://developer.apple.com/documentation/xcode/writing-and-running-performance-tests)** — measurement accuracy settings, XCTest metrics, baselines
+- **[Energy Efficiency Guide for Mac Apps](https://developer.apple.com/library/archive/documentation/Performance/Conceptual/power_efficiency_guidelines_osx/index.html)** (archived) — App Nap, QoS, wakeups, Energy Impact
+- **WWDC25 session 308** (CPU Profiler over Time Profiler), **WWDC24 session 10173** (leaked vs. abandoned), **WWDC23 session 10248** (hang severity)
+- The scope and framing began as **[alphaonedev/openclaw-graph](https://www.skills.sh/alphaonedev/openclaw-graph/macos-perf)** (`macos-perf`), since defunct — little of it survives.
+
+---
+
 ## Repo layout
 
 ```
@@ -313,16 +378,26 @@ k97/skills
     │   └── scripts/
     │       ├── validate-source.sh    # the source-image gate
     │       └── appicon.swift         # resize / flatten / pad / macos treatments
-    └── discoverability/
+    ├── discoverability/
+    │   ├── SKILL.md
+    │   ├── references/
+    │   │   ├── technical-audit.md    # full Phase 1 checklist
+    │   │   ├── geo.md                # Phase 2 depth + bot table
+    │   │   └── schema-recipes.md     # copy-paste JSON-LD, lint-clean
+    │   └── scripts/
+    │       ├── redirect-trace.sh
+    │       ├── extract-jsonld.mjs
+    │       └── audit-meta.mjs
+    └── macos-perf/
         ├── SKILL.md
-        ├── references/
-        │   ├── technical-audit.md    # full Phase 1 checklist
-        │   ├── geo.md                # Phase 2 depth + bot table
-        │   └── schema-recipes.md     # copy-paste JSON-LD, lint-clean
-        └── scripts/
-            ├── redirect-trace.sh
-            ├── extract-jsonld.mjs
-            └── audit-meta.mjs
+        └── references/
+            ├── measurement.md        # validity: build settings, repetitions, thermal gate, XCTest
+            ├── instruments.md        # xctrace CLI, template choice, CPU Profiler vs Time Profiler
+            ├── responsiveness.md     # hang thresholds, busy vs blocked, frame budget, launch
+            ├── cpu.md                # sample, hot paths, QoS placement, multi-process apps
+            ├── memory.md             # footprint, leaked vs abandoned, generational analysis
+            ├── energy.md             # wakeups, QoS, App Nap, sleep assertions, thermal state
+            └── review.md             # report structure and baseline format
 ```
 
 The registry CLI walks root `SKILL.md`, `skills/<name>/SKILL.md`, or `skills/<category>/<name>/SKILL.md`. Anything else is invisible to `npx skills add`.
