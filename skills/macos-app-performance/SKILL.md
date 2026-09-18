@@ -10,7 +10,9 @@ metadata:
 
 # macos-app-performance
 
-Measure one app, judge it against Apple's published thresholds, and report what to fix first. Everything here is macOS-applicable and sourced from Apple's documentation; where Apple's guidance is iOS-only, this skill says so instead of borrowing it, and where Apple's own material is archived or does not affirm macOS support, the reference covering it says so.
+Measures how a macOS app performs (hangs, launch time, CPU, memory, energy) and judges every number against the thresholds Apple publishes, so you know what to fix first. Works on any running app, uses Instruments where Xcode is installed, and can keep a baseline to catch regressions between releases.
+
+Everything here is macOS-applicable and sourced from Apple's documentation; where Apple's guidance is iOS-only, this skill says so instead of borrowing it, and where Apple's own material is archived or does not affirm macOS support, the reference covering it says so.
 
 ## Step 1 — establish the subject
 

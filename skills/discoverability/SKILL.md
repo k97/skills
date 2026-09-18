@@ -10,6 +10,8 @@ metadata:
 
 # discoverability
 
+Checks how easily a website can be found, by search engines and by AI assistants that cite sources, then fixes what it finds in your code. It runs a technical SEO audit, a review of AI-citation readiness, and a fix pass, with scripts that trace redirect loops and lint JSON-LD.
+
 Audit, then GEO review, then apply fixes. Next.js / TypeScript defaults; follow whatever the repo already uses. `${CLAUDE_SKILL_DIR}` is this skill's directory — the working directory is the user's project, so address bundled files through it.
 
 | Flag      | Phase                                 | Writes code |

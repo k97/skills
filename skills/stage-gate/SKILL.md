@@ -10,7 +10,7 @@ metadata:
 
 # stage-gate
 
-Three quality gates, one at each boundary of a feature cycle.
+Reviews your work at the three points where problems are cheapest to catch: the plan before code is written, the diff before it is pushed, and the repo after the merge. Each gate is run by a fresh reviewer rather than the author, and the release gate turns what was learned into rules while keeping CLAUDE.md or AGENTS.md short.
 
 | Gate | Run it when | It checks | Writes |
 | --- | --- | --- | --- |

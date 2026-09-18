@@ -10,7 +10,9 @@ metadata:
 
 # apple-appicon
 
-One source image in, HIG-correct icon sets out. Agent-agnostic: nothing here depends on a specific coding agent — only on a shell. Commands write `<skill-dir>` for this skill's directory; resolve it to wherever your agent installed the skill (Claude Code exposes it as `${CLAUDE_SKILL_DIR}`; otherwise it is the directory containing this SKILL.md). The working directory is the user's project.
+Turns one source image into a complete, HIG-correct set of app icons for iOS, iPadOS, macOS, visionOS and Tauri. It checks the image first, then writes the asset catalogs, `.icns` and Tauri icon files, with nothing to install on a Mac beyond Xcode's command line tools.
+
+Agent-agnostic: nothing here depends on a specific coding agent — only on a shell. Commands write `<skill-dir>` for this skill's directory; resolve it to wherever your agent installed the skill (Claude Code exposes it as `${CLAUDE_SKILL_DIR}`; otherwise it is the directory containing this SKILL.md). The working directory is the user's project.
 
 **Requirements — check the platform first.** The native toolchain is macOS: `sips`, `iconutil`, `swift` from Xcode Command Line Tools, no installs. Run `uname -s` (or equivalent) before promising anything, and on anything other than macOS tell the user up front, in plain terms, what works on their machine and what doesn't — then proceed with what does:
 
