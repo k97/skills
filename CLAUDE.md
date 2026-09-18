@@ -1,6 +1,6 @@
 # k97/skills
 
-Multi-skill collection built on the [Agent Skills](https://agentskills.io) standard: `stage-gate`, `apple-appicon`, `discoverability`, `macos-perf`.
+Multi-skill collection built on the [Agent Skills](https://agentskills.io) standard: `stage-gate`, `apple-appicon`, `discoverability`, `macos-app-performance`.
 
 ## Commands
 

@@ -7,7 +7,7 @@ Agent Skills for AI coding agents, built on the [Agent Skills](https://agentskil
 | [**`stage-gate`**](skills/stage-gate/) | Quality gates at the three feature-cycle boundaries: plan review (`--plan`), diff review (`--dev`), post-merge hygiene (`--release`). Karpathy-style guardrails + memory-file (CLAUDE.md / AGENTS.md) progressive disclosure. Agent-agnostic. |
 | [**`apple-appicon`**](skills/apple-appicon/) | Apple platform app icons (iOS, iPadOS, macOS, visionOS) from one source image, HIG as the north star. Validates the source, then generates appiconsets, `.icns`, visionOS stacks, and Tauri's full set with the dock-icon margin fix. Agent-agnostic. |
 | [**`discoverability`**](skills/discoverability/) | Technical SEO audit → GEO (AI-citation) review → applies the fixes in your codebase. Ships scripts that trace redirect loops and lint JSON-LD. |
-| [**`macos-perf`**](skills/macos-perf/) | Benchmark and review one macOS app against Apple's published thresholds — hangs, responsiveness, launch, CPU, memory, energy — with an optional baseline for regression checks. Careful about which Apple guidance is macOS and which is iOS-only. |
+| [**`macos-app-performance`**](skills/macos-app-performance/) | Benchmark and review one macOS app against Apple's published thresholds — hangs, responsiveness, launch, CPU, memory, energy — with an optional baseline for regression checks. Careful about which Apple guidance is macOS and which is iOS-only. |
 
 ## Install
 
@@ -16,7 +16,7 @@ npx skills add k97/skills --list                  # see what's in here
 npx skills add k97/skills --skill stage-gate      # install one skill
 ```
 
-`skills add` takes the **repo path**, not the skill name. Requirements vary per skill; `stage-gate` needs only `git`. `apple-appicon` is fully native on macOS (Xcode Command Line Tools: `sips`, `iconutil`, `swift`); on Linux/Windows it says so up front and falls back to ImageMagick 7 + Tauri's own cross-platform CLI where it can. `discoverability` needs `curl` and Node 18+, with nothing to `npm install`. `macos-perf` is macOS-only by nature; the command-line half needs nothing installed, while Instruments, `xctrace` and XCTest metrics need full Xcode rather than the Command Line Tools, and the skill checks before promising a trace.
+`skills add` takes the **repo path**, not the skill name. Requirements vary per skill; `stage-gate` needs only `git`. `apple-appicon` is fully native on macOS (Xcode Command Line Tools: `sips`, `iconutil`, `swift`); on Linux/Windows it says so up front and falls back to ImageMagick 7 + Tauri's own cross-platform CLI where it can. `discoverability` needs `curl` and Node 18+, with nothing to `npm install`. `macos-app-performance` is macOS-only by nature; the command-line half needs nothing installed, while Instruments, `xctrace` and XCTest metrics need full Xcode rather than the Command Line Tools, and the skill checks before promising a trace.
 
 > **Claude Code, in a project with no `.claude/` directory yet:** the CLI writes the canonical copy to `.agents/skills/` and skips the `.claude/skills/` symlink, even though it reports "Installing to: … Claude Code". Run `mkdir -p .claude` first, or install globally with `-g`, and the symlink appears as expected.
 
@@ -294,7 +294,7 @@ Assembled and extended by [@k97](https://github.com/k97), drawing on:
 
 ---
 
-# macos-perf
+# macos-app-performance
 
 Points at **one app** and answers whether it is fast enough, against **Apple's own published thresholds** — then says what to fix first. Not whole-machine triage: the subject is an app you are building or one you are evaluating.
 
@@ -303,13 +303,13 @@ It exists because the numbers are the easy part and the judgement is not. Apple 
 ## Usage
 
 ```bash
-/macos-perf MyApp                # full review: hangs, CPU, memory, energy
-/macos-perf MyApp --hang         # beachballs: is the main thread busy or blocked
-/macos-perf MyApp --cpu          # where the CPU goes, and whether that work is needed
-/macos-perf MyApp --launch       # time to first frame
-/macos-perf MyApp --memory       # footprint, growth, leaked vs abandoned
-/macos-perf MyApp --energy       # wakeups, QoS, sleep assertions, thermals
-/macos-perf MyApp --baseline     # record numbers, or compare against a recorded set
+/macos-app-performance MyApp                # full review: hangs, CPU, memory, energy
+/macos-app-performance MyApp --hang         # beachballs: is the main thread busy or blocked
+/macos-app-performance MyApp --cpu          # where the CPU goes, and whether that work is needed
+/macos-app-performance MyApp --launch       # time to first frame
+/macos-app-performance MyApp --memory       # footprint, growth, leaked vs abandoned
+/macos-app-performance MyApp --energy       # wakeups, QoS, sleep assertions, thermals
+/macos-app-performance MyApp --baseline     # record numbers, or compare against a recorded set
 ```
 
 Plain language works: _"profile my app"_, _"why does my app beachball"_, _"is my app leaking"_, _"did this release get slower"_, _"my Mac app drains battery"_, _"performance review before I ship"_.
@@ -321,6 +321,40 @@ Plain language works: _"profile my app"_, _"why does my app beachball"_, _"is my
 > Tauri app, memory goes from 180MB to about 900MB over a day of use and never comes back. `leaks` says nothing is leaking. Is that actually fine?
 
 > We shipped 2.1 last week and a few users say it feels slower than 2.0. How would I establish whether that's real before I start changing things?
+
+## Example prompts
+
+One app, judged against Apple's numbers — each flag is a question:
+
+**Before shipping — the full review:**
+
+> We cut 2.2 on Friday. Review the release build of MyApp against Apple's thresholds and tell me what to fix first. `/macos-app-performance MyApp`
+
+> Record this release's numbers so the next one has something to compare against. `/macos-app-performance MyApp --baseline`
+
+**Beachballs and hangs:**
+
+> MyApp shows the spinning cursor for a couple of seconds after I paste a large document. Is the main thread busy or blocked, and on what?
+
+**CPU:**
+
+> Activity Monitor shows MyApp at 30% CPU while it sits idle in the background. Find what is running and whether it needs to run at all.
+
+**Launch:**
+
+> Cold launch of MyApp feels slow on an M1 Air. Measure time to first frame and say whether the cost is before or after `main`.
+
+**Memory:**
+
+> Footprint over an hour of normal use, and whether the growth is leaked or abandoned. `/macos-app-performance MyApp --memory`
+
+**Energy:**
+
+> MyApp drains the battery overnight with the lid closed. Which assertion is holding the machine awake, and how many idle wakeups per second is it taking?
+
+**Regression check against a baseline:**
+
+> Compare this build against the baseline we recorded for 2.1. Tell me what actually moved, not what is inside run-to-run noise.
 
 ## The workflow
 
@@ -336,7 +370,7 @@ Establish the subject, make the measurement valid, measure, then judge.
 ## What it gets right that the folklore doesn't
 
 - **Hangs first.** Apple's guidance, not a preference: fixing hangs tends to fix rendering stutter as a side effect.
-- **Busy vs. blocked main thread** is the triage split that decides the tool. Empty stacks during a freeze mean _blocked_, and a CPU profiler will never show you why — that needs Thread State Trace.
+- **Busy vs. blocked main thread** is the triage split that decides the tool. Empty stacks during a freeze mean _blocked_, and a CPU profiler will never show you why — that needs thread states, which is the System Trace template from the command line.
 - **Prefer CPU Profiler to Time Profiler.** Apple's current guidance: Time Profiler samples on a timer and over-represents periodic work, and under-weights faster cores — which matters on Apple Silicon.
 - **A leak and abandoned memory are different bugs.** `leaks` only finds unreachable memory. Memory that climbs forever while `leaks` reports nothing is _abandoned_, and only generational analysis finds it.
 - **`instruments` is gone** — deprecated in Xcode 12 and absent from current Xcode. `xcrun xctrace` replaces it, and its documentation is `man xctrace`, not a web page.
@@ -388,7 +422,7 @@ k97/skills
     │       ├── redirect-trace.sh
     │       ├── extract-jsonld.mjs
     │       └── audit-meta.mjs
-    └── macos-perf/
+    └── macos-app-performance/
         ├── SKILL.md
         └── references/
             ├── measurement.md        # validity: build settings, repetitions, thermal gate, XCTest
