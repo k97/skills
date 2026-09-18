@@ -10,7 +10,7 @@ Multi-skill collection built on the [Agent Skills](https://agentskills.io) stand
 ## Rules
 
 - [Coding guardrails](.claude/rules/coding-guardrails.md) — think before coding, simplicity first, surgical changes, goal-driven execution
-- [Skill authoring](.claude/rules/skill-authoring.md) — SKILL.md is charged every invocation, references are not; one fact one file
+- [Skill authoring](.claude/rules/skill-authoring.md) — SKILL.md is charged every invocation, references are not; one fact one file; run every command before publishing
 
 ## Gates
 

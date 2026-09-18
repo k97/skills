@@ -388,7 +388,7 @@ Rebuilt by [@k97](https://github.com/k97), grounded in Apple's own material:
 - **[Writing and running performance tests](https://developer.apple.com/documentation/xcode/writing-and-running-performance-tests)** — measurement accuracy settings, XCTest metrics, baselines
 - **[Energy Efficiency Guide for Mac Apps](https://developer.apple.com/library/archive/documentation/Performance/Conceptual/power_efficiency_guidelines_osx/index.html)** (archived) — App Nap, QoS, wakeups, Energy Impact
 - **WWDC25 session 308** (CPU Profiler over Time Profiler), **WWDC24 session 10173** (leaked vs. abandoned), **WWDC23 session 10248** (hang severity)
-- The scope and framing began as **[alphaonedev/openclaw-graph](https://www.skills.sh/alphaonedev/openclaw-graph/macos-perf)** (`macos-perf`), since defunct — little of it survives.
+- The scope and framing began as the `macos-perf` skill in **[alphaonedev/openclaw-graph](https://www.skills.sh/alphaonedev/openclaw-graph/macos-perf)**, since defunct — little of it survives, and the name was dropped because it collides with whole-machine skills of the same name.
 
 ---
 
