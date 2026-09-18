@@ -30,12 +30,16 @@ Ranked by impact. For each: what was measured, what it means, the evidence (trac
 
 ## Not measured
 
-What was skipped and why — a tool that refused, a template unavailable for a macOS target, a metric that is iOS-only.
+What was skipped and why — a tool that needed root you did not have, a template unavailable for a macOS target, a metric that is iOS-only.
 ```
 
 Two rules for the Verdict column. Where Apple publishes a threshold, judge against it and say so. Where Apple publishes none — launch time and memory footprint on macOS both qualify — record the number and compare it against the app's own history instead of inventing a target. A fabricated threshold is worse than an honest "recorded".
 
 Separate measurement from inference throughout. "The main thread blocked for 780 ms in `loadIndex`" is a measurement; "the index should be loaded lazily" is a recommendation, and the reader is entitled to see which is which.
+
+## Checking an Apple claim before it goes in the report
+
+Apple's documentation pages are JavaScript-rendered and return an empty shell to a plain fetch. **Appending `.md` to a `developer.apple.com/documentation/...` URL returns the article source**, including a machine-readable `availability` block giving exact per-platform version requirements — use it to check whether an API or metric exists on macOS at all before quoting it. Symbol paths vary; when a guess returns 404, fetch the parent page's `.md` and follow its links. Apple's archived library (`developer.apple.com/library/archive/...`) is plain HTML and fetches directly.
 
 ## Baseline format
 

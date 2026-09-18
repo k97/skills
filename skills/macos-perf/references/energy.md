@@ -12,7 +12,7 @@ The structural point is **fixed versus dynamic cost**: dynamic is the energy of 
 
 ## Wakeups — the first thing to measure
 
-Apple's idle-wakeup threshold is in SKILL.md's table and it is unambiguous. Activity Monitor shows the figure under Energy with View > Column > Idle Wake Ups, and `sudo timerfires -p <pid> -s` logs the routines responsible.
+Apple's idle-wakeup threshold is in SKILL.md's table and it is unambiguous. Activity Monitor shows the figure under Energy with View > Column > Idle Wake Ups, and `sudo timerfires -p <pid> -s` logs the routines responsible. Without root, `top -pid <pid> -l 2 -c d -stats pid,command,cpu,idlew,power` gives the count per sample interval in its second sample — no stacks, but enough to judge against the threshold.
 
 Timers are the usual cause. Apple's guidance is a **tolerance of 10% of the interval**, which lets the system coalesce wakeups:
 
@@ -38,7 +38,7 @@ Its `tolerance` defaults to half the interval and its `qualityOfService` default
 | Utility | downloads, imports — typically with a progress bar | seconds to minutes |
 | Background | indexing, syncing, backups — invisible to the user | minutes to hours |
 
-Apple's headline rule is the QoS row of SKILL.md's table, in Apple's own words: _"Optimally, run your app at a QoS level of utility or lower at least 90% of the time when user activity is not occurring."_ Note that "or lower" includes utility itself. `powermetrics` is Apple's suggested way to check the actual distribution.
+Apple's headline rule is the QoS row of SKILL.md's table; note that "or lower" includes utility itself. Apple's own check for the distribution is `sudo powermetrics --show-process-qos --samplers tasks`.
 
 ## App Nap
 
@@ -70,9 +70,11 @@ An app that ignores thermal state is a plausible answer to "why do the fans come
 ## Measuring
 
 ```bash
-sudo powermetrics --samplers tasks --show-process-energy -n 1
+sudo powermetrics --samplers tasks --show-process-energy --show-process-qos -n 1
 pmset -g assertions
 pmset -g batt
 ```
+
+`powermetrics` refuses without root; the QoS distribution is then unmeasured, and the report says so.
 
 Xcode's Energy Impact gauge and Activity Monitor's Energy pane both report an **Energy Impact** score. Apple defines it only as accounting for "CPU usage, network activity, disk I/O, and more" and never publishes the formula or weights — treat it as a relative indicator for comparing before and after on the same machine, never as a measurement to quote as a number.

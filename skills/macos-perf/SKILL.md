@@ -17,7 +17,7 @@ Measure one app, judge it against Apple's published thresholds, and report what 
 A running app is named by name, pid, or bundle path. Detect a project in the working directory, because it decides what can be measured:
 
 ```bash
-ls Package.swift *.xcodeproj *.xcworkspace 2>/dev/null      # Swift / Xcode
+find . -maxdepth 1 \( -name Package.swift -o -name '*.xcodeproj' -o -name '*.xcworkspace' \)   # Swift / Xcode (a bare glob aborts under zsh)
 [ -f src-tauri/tauri.conf.json ] && echo tauri
 [ -f package.json ] && grep -q '"electron"' package.json && echo electron
 ```
@@ -65,18 +65,15 @@ These are the verdicts, and this table is where they live — the references app
 ## Invariants
 
 - **A number without its conditions is not a measurement.** Machine, OS version, build configuration, thermal state, and power source travel with every figure. Numbers taken on battery, or on a machine that was already hot, do not compare with numbers taken plugged in and cool.
-- **One run is an anecdote.** Several runs, discard the first, report the median and the spread — the same shape as Apple's own `measure` API. A 5% improvement inside 15% run-to-run variance is nothing.
-- **Sampling has a bias, and Apple names it.** Time Profiler samples on a timer and over-represents periodic work, so Apple's current guidance is to prefer CPU Profiler for CPU optimisation.
-- **A leak and abandoned memory are different bugs**, and `leaks` finds only one of them.
-- **macOS has no jetsam**, no per-process memory limit and no low-memory warning — a large footprint costs the whole machine rather than killing the app, so no iOS memory threshold transfers.
+- **One run is an anecdote.** Report the median and the spread of several runs, never one figure — [references/measurement.md](references/measurement.md) has the protocol. A 5% improvement inside 15% run-to-run variance is nothing.
+- **Prefer CPU Profiler over Time Profiler** for CPU work; [references/instruments.md](references/instruments.md) has Apple's reason.
+- **`leaks` finds leaked memory, not abandoned memory** — [references/memory.md](references/memory.md) separates the two bugs.
+- **No iOS memory threshold transfers to macOS** — [references/memory.md](references/memory.md) has Apple's words on why.
 - **CPU percentages are per-core**, so 400% on an 8-core machine is four cores busy.
 - **`top`'s first sample is computed from a delta it does not have yet**, so `-l 1` reports a figure describing nothing — take two, read the second. `ps` `%cpu` is a decaying average over up to a minute and smears short spikes.
-- **Three things look like "permission denied", and only one is fixed by `sudo`.** Inspecting a process you do not own (`sample`, `footprint`, `leaks`, `heap`, `vmmap`) needs root. An Apple-signed or SIP-protected binary refuses regardless. Your own hardened, notarised build refuses until rebuilt with `get-task-allow` — a debug build.
-- **The `instruments` CLI is gone.** Apple deprecated it in Xcode 12 in favour of `xctrace` and it is absent from current Xcode; reports of `xcrun: error: unable to find utility "instruments"` start appearing around Xcode 13. `xcrun xctrace` replaces it and needs full Xcode rather than the Command Line Tools.
-
-## Reading Apple's documentation
-
-Apple's documentation pages are JavaScript-rendered and return an empty shell to a plain fetch. **Appending `.md` to any `developer.apple.com/documentation/...` URL returns the article source**, including a machine-readable `availability` block giving exact per-platform version requirements. Use it to check a claim before repeating it — particularly to check whether an API or metric exists on macOS at all, since much of Apple's performance material is written for iOS.
+- **Root is needed in two places, and the report must say when you did not have it.** `spindump`, `powermetrics` and `timerfires` need root for every target. `sample`, `footprint`, `leaks`, `heap` and `vmmap` need it only for a process owned by another user — a hardened, notarised or Apple-signed process you own inspects fine. Without `sudo`, take the non-root path the reference names and list the rest under **Not measured**.
+- **The `instruments` CLI is gone.** Apple deprecated it in Xcode 12 and removed it in Xcode 13 (release notes 36641078 and 74412969); `xcrun instruments` now fails with `unable to find utility "instruments"`. `xcrun xctrace` replaces it and needs full Xcode rather than the Command Line Tools.
+- **Check an Apple claim before repeating it.** Much of Apple's performance material is written for iOS; [references/review.md](references/review.md) has the method for reading Apple's documentation, including per-platform availability.
 
 ## Scope
 

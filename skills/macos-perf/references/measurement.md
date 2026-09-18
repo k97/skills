@@ -31,7 +31,7 @@ Also record the power source. `pmset -g batt` says whether the machine is on AC;
 
 ## Measuring in code — XCTest
 
-Apple ships seven metrics: `XCTClockMetric` (wall time), `XCTCPUMetric` (CPU time, cycles, instructions retired), `XCTMemoryMetric` (physical memory delta), `XCTStorageMetric` (logical bytes written), `XCTOSSignpostMetric` (time inside a signposted region), `XCTApplicationLaunchMetric` and `XCTHitchMetric` (both UI-test metrics needing an `XCUIApplication`, and a poor fit for macOS code benchmarking).
+Apple ships seven metrics: `XCTClockMetric` (wall time), `XCTCPUMetric` (CPU time, cycles, instructions retired), `XCTMemoryMetric` (physical memory delta), `XCTStorageMetric` (logical bytes written), `XCTOSSignpostMetric` (time inside a signposted region), `XCTApplicationLaunchMetric` (time to first frame of a launch; `init()` or `init(waitUntilResponsive:)`, the latter macOS 11+) and `XCTHitchMetric` (needs an `XCUIApplication`; macOS 26+). The last two measure a launched app, so they need a UI test target — a poor fit for benchmarking code, but the XCTest route to a launch figure on macOS.
 
 ```swift
 func testParsePerformance() {
@@ -48,7 +48,7 @@ Prefer the `init()` overloads. The `init(application:)` overloads require a UI t
 
 `XCTOSSignpostMetric` records nothing at all when begin and end events are not matched — Apple states this explicitly, and it is the usual reason a signpost metric reports zero.
 
-> Availability caveat worth knowing: Apple's published `availability` metadata for the `XCTMetric` classes and `measure(metrics:options:block:)` omits macOS, while listing every other platform. This appears to be a documentation artefact rather than a real restriction — the surrounding article is platform-neutral — but it means there is no Apple statement affirming macOS support. Verify against the SDK headers before promising it.
+> Availability caveat, resolved: Apple's published `availability` metadata for six of the seven metric classes and for `measure(metrics:options:block:)` omits macOS while listing every other platform. That mirrors the SDK — `XCTestDefines.h` defines `XCT_METRIC_API_AVAILABLE` as `API_AVAILABLE(ios(13.0), tvos(13.0), watchos(7.0))` — and in the macOS SDK an unlisted platform is available, not excluded: `XCTMetric.h` marks the members that really are macOS-unavailable with an explicit `API_UNAVAILABLE(macos)`, and `XCTHitchMetric` lists macOS 26. The metrics compile and run in a macOS test target; the doc omission is an artefact of the macro.
 
 ## Xcode baselines, and why not to gate CI on them
 
