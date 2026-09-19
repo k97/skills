@@ -6,11 +6,11 @@ license: MIT
 compatibility: >-
   macOS only. Command-line measurements need nothing installed; Instruments, xctrace and XCTest metrics need full Xcode, not just the Command Line Tools.
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
   source: https://github.com/k97/skills/tree/main/skills/macos-app-performance
 ---
 
-# macOS app performance
+# Performance benchmarks for macOS apps
 
 Measures how a macOS app performs (hangs, launch time, CPU, memory, energy) and judges every number against the thresholds Apple publishes, so you know what to fix first. Works on any running app, uses Instruments where Xcode is installed, and can keep a baseline to catch regressions between releases.
 

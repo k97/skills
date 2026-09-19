@@ -2,6 +2,10 @@
 
 Per-skill versions live in each `SKILL.md` under `metadata.version`. This file lists what changed and when.
 
+## 2026-09-19
+
+- **all skills** — body H1s are descriptive titles rather than the skill slug respelled, so the skills.sh page no longer reads as the name twice. stage-gate 0.2.2, discoverability 0.2.1, apple-appicon 0.1.2, macos-app-performance 0.1.2.
+
 ## 2026-09-18
 
 - **all skills** — every `SKILL.md` body now opens with a plain-English summary; frontmatter reduced to the six Agent Skills spec fields (`argument-hint` dropped, `source` moved under `metadata`), `license: MIT` added, `compatibility` added where a skill has real requirements; H1s are human titles.

@@ -6,11 +6,11 @@ license: MIT
 compatibility: >-
   Requires curl and Node 18+; nothing to npm install.
 metadata:
-  version: "0.2.0"
+  version: "0.2.1"
   source: https://github.com/k97/skills/tree/main/skills/discoverability
 ---
 
-# Discoverability (SEO and GEO)
+# Search and AI-citation readiness
 
 Checks how easily a website can be found, by search engines and by AI assistants that cite sources, then fixes what it finds in your code. It runs a technical SEO audit, a review of AI-citation readiness, and a fix pass, with scripts that trace redirect loops and lint JSON-LD.
 

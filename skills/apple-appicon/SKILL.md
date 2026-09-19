@@ -6,11 +6,11 @@ license: MIT
 compatibility: >-
   macOS with Xcode Command Line Tools (sips, iconutil, swift) for native output; on Linux or Windows, Tauri projects use the Tauri CLI and asset catalogs need ImageMagick 7.
 metadata:
-  version: "0.1.1"
+  version: "0.1.2"
   source: https://github.com/k97/skills/tree/main/skills/apple-appicon
 ---
 
-# Apple app icons
+# Icon sets for Apple platforms
 
 Turns one source image into a complete, HIG-correct set of app icons for iOS, iPadOS, macOS, visionOS and Tauri. It checks the image first, then writes the asset catalogs, `.icns` and Tauri icon files, with nothing to install on a Mac beyond Xcode's command line tools.
 
