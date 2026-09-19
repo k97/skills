@@ -1,0 +1,24 @@
+{
+  "name": "k97-skills",
+  "owner": {
+    "name": "Karthik"
+  },
+  "metadata": {
+    "description": "Agent Skills for AI coding agents: stage-gate, apple-appicon, discoverability, macos-app-performance",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "k97-skills",
+      "description": "Quality gates for a feature cycle, Apple app icons from one image, technical SEO and GEO audits with fixes, and macOS app performance benchmarks.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/stage-gate",
+        "./skills/apple-appicon",
+        "./skills/discoverability",
+        "./skills/macos-app-performance"
+      ]
+    }
+  ]
+}

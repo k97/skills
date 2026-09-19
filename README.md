@@ -16,6 +16,13 @@ npx skills add k97/skills --list                  # see what's in here
 npx skills add k97/skills --skill stage-gate      # install one skill
 ```
 
+Claude Code users can also install the whole set as a plugin:
+
+```bash
+/plugin marketplace add k97/skills
+/plugin install k97-skills@k97-skills
+```
+
 `skills add` takes the **repo path**, not the skill name. Requirements vary per skill; `stage-gate` needs only `git`. `apple-appicon` is fully native on macOS (Xcode Command Line Tools: `sips`, `iconutil`, `swift`); on Linux/Windows it says so up front and falls back to ImageMagick 7 + Tauri's own cross-platform CLI where it can. `discoverability` needs `curl` and Node 18+, with nothing to `npm install`. `macos-app-performance` is macOS-only by nature; the command-line half needs nothing installed, while Instruments, `xctrace` and XCTest metrics need full Xcode rather than the Command Line Tools, and the skill checks before promising a trace.
 
 > **Claude Code, in a project with no `.claude/` directory yet:** the CLI writes the canonical copy to `.agents/skills/` and skips the `.claude/skills/` symlink, even though it reports "Installing to: … Claude Code". Run `mkdir -p .claude` first, or install globally with `-g`, and the symlink appears as expected.
@@ -396,6 +403,10 @@ Rebuilt by [@k97](https://github.com/k97), grounded in Apple's own material:
 
 ```
 k97/skills
+├── skills.sh.json                    # groups the skills.sh repo page
+├── .claude-plugin/                   # marketplace.json for /plugin marketplace add
+├── evals/                            # one `claude plugin eval` case per skill (format per docs; not yet run — eval is early access on Claude Code 2.1.223)
+├── CHANGELOG.md
 └── skills/
     ├── stage-gate/
     │   ├── SKILL.md
@@ -433,6 +444,8 @@ k97/skills
             ├── energy.md             # wakeups, QoS, App Nap, sleep assertions, thermal state
             └── review.md             # report structure and baseline format
 ```
+
+Each `SKILL.md` carries only the six [Agent Skills spec](https://agentskills.io/specification) frontmatter fields, so `npx skills-ref validate skills/<name>` passes.
 
 The registry CLI walks root `SKILL.md`, `skills/<name>/SKILL.md`, or `skills/<category>/<name>/SKILL.md`. Anything else is invisible to `npx skills add`.
 

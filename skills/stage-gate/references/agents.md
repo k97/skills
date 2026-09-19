@@ -11,7 +11,7 @@ This skill needs six things from its host. Claude Code is the reference implemen
 | Fresh reviewer | subagent dispatch | subagent or task dispatch where available | varies | generally none |
 | Invocation | `/stage-gate --plan` | prose, or the host's own skill syntax | prose | prose |
 | Init command | `/init` | varies | varies | none |
-| Argument passing | `argument-hint` frontmatter | positional or prose | prose | prose |
+| Argument passing | flags in the invocation (`$ARGUMENTS`) | positional or prose | prose | prose |
 
 `AGENTS.md` is the broadly adopted cross-tool format, not a two-or-three-tool niche. Treat it as the default for any agent not otherwise named here.
 

@@ -14,3 +14,9 @@ docs/plans/
 
 # Node (in case a test project lands here)
 node_modules/
+
+# Research notes — same treatment as plans
+docs/research/
+
+# Plugin eval runs
+evals/results/

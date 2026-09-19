@@ -2,13 +2,15 @@
 name: macos-app-performance
 description: >-
   Benchmark and review one macOS app's performance against Apple's own documented thresholds — hangs, main-thread responsiveness, launch, CPU, memory, energy — and report what to fix first. Measures under conditions that make the numbers mean something, uses Instruments via xctrace and the command-line tools, and optionally records a baseline to compare later runs against. Works on any running app, and uses better tooling when it finds an Xcode, SwiftPM, Tauri or Electron project. Use for "profile my app", "benchmark this app", "why is my app slow", "my app beachballs", "is my app leaking", "app launch is slow", "my app drains battery", "did this release get slower", "performance review before shipping", "Time Profiler", "Instruments from the command line", "xctrace", "signposts", "XCTest performance test". Careful about what is macOS guidance and what is iOS-only.
-argument-hint: "<app-name|pid|bundle-path> [--hang|--cpu|--launch|--memory|--energy] [--baseline]"
-source: https://github.com/k97/skills/tree/main/skills/macos-app-performance
+license: MIT
+compatibility: >-
+  macOS only. Command-line measurements need nothing installed; Instruments, xctrace and XCTest metrics need full Xcode, not just the Command Line Tools.
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
+  source: https://github.com/k97/skills/tree/main/skills/macos-app-performance
 ---
 
-# macos-app-performance
+# macOS app performance
 
 Measures how a macOS app performs (hangs, launch time, CPU, memory, energy) and judges every number against the thresholds Apple publishes, so you know what to fix first. Works on any running app, uses Instruments where Xcode is installed, and can keep a baseline to catch regressions between releases.
 

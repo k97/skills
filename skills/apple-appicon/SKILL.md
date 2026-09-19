@@ -2,13 +2,15 @@
 name: apple-appicon
 description: >-
   Generate Apple platform app icons (iOS, iPadOS, macOS, visionOS) from one source image, with Apple's Human Interface Guidelines as the north star and first-class Tauri support. Validates the source first — square aspect, >=1024px, alpha, sRGB/P3, 8-bit — then generates AppIcon.appiconset (with dark/tinted variants), .icns via iconutil with Apple's rounded-rect margins for legacy macOS, visionOS layered image stacks, and Tauri's full icon set including the dock-icon margin fix. Dependency-free on macOS (sips, iconutil, Swift/CoreGraphics). Use for "generate app icons", "app icon from this image", "make an .icns", "AppIcon.appiconset", "tauri icon", "dock icon looks too big/square", "App Store icon". Roadmap: Flutter, React Native, Ionic.
-argument-hint: "<source-image> [--platform ios|ipados|macos|visionos|tauri|all] [--out <dir>]"
-source: https://github.com/k97/skills/tree/main/skills/apple-appicon
+license: MIT
+compatibility: >-
+  macOS with Xcode Command Line Tools (sips, iconutil, swift) for native output; on Linux or Windows, Tauri projects use the Tauri CLI and asset catalogs need ImageMagick 7.
 metadata:
-  version: "0.1.0"
+  version: "0.1.1"
+  source: https://github.com/k97/skills/tree/main/skills/apple-appicon
 ---
 
-# apple-appicon
+# Apple app icons
 
 Turns one source image into a complete, HIG-correct set of app icons for iOS, iPadOS, macOS, visionOS and Tauri. It checks the image first, then writes the asset catalogs, `.icns` and Tauri icon files, with nothing to install on a Mac beyond Xcode's command line tools.
 

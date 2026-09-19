@@ -1,0 +1,21 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Workflow",
+      "description": "Quality gates for the plan, the diff and the merge, run by a fresh reviewer.",
+      "skills": ["stage-gate"]
+    },
+    {
+      "title": "Apple platforms",
+      "description": "App icons and performance benchmarks for macOS, iOS, iPadOS and visionOS apps.",
+      "skills": ["apple-appicon", "macos-app-performance"]
+    },
+    {
+      "title": "Web",
+      "description": "Technical SEO and AI-citation audits with fixes applied in the codebase.",
+      "skills": ["discoverability"]
+    }
+  ]
+}
