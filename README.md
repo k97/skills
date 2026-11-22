@@ -8,6 +8,8 @@ Agent Skills for AI coding agents, built on the [Agent Skills](https://agentskil
 | [**`apple-appicon`**](skills/apple-appicon/) | Apple platform app icons (iOS, iPadOS, macOS, visionOS) from one source image, HIG as the north star. Validates the source, then generates appiconsets, `.icns`, visionOS stacks, and Tauri's full set with the dock-icon margin fix. Agent-agnostic. |
 | [**`discoverability`**](skills/discoverability/) | Technical SEO audit → GEO (AI-citation) review → applies the fixes in your codebase. Ships scripts that trace redirect loops and lint JSON-LD. |
 | [**`macos-app-performance`**](skills/macos-app-performance/) | Benchmark and review one macOS app against Apple's published thresholds — hangs, responsiveness, launch, CPU, memory, energy — with an optional baseline for regression checks. Careful about which Apple guidance is macOS and which is iOS-only. |
+| [**`hardware-concept-study`**](skills/hardware-concept-study/) | Go/no-go research for a hardware product: market, customers, parts and design in parallel passes, an independent pass reconciled against them, a price built from cost, the break-even volume, and next steps ordered cheapest first. |
+| [**`session-move`**](skills/session-move/) | Moves a Claude Code session into another repo so `--resume` continues there, and writes the brief, decisions and CLAUDE.md from the user's own messages rather than the repo's files. Claude Code only. |
 
 ## Install
 
@@ -23,7 +25,7 @@ Claude Code users can also install the whole set as a plugin:
 /plugin install k97-skills@k97-skills
 ```
 
-`skills add` takes the **repo path**, not the skill name. Requirements vary per skill; `stage-gate` needs only `git`. `apple-appicon` is fully native on macOS (Xcode Command Line Tools: `sips`, `iconutil`, `swift`); on Linux/Windows it says so up front and falls back to ImageMagick 7 + Tauri's own cross-platform CLI where it can. `discoverability` needs `curl` and Node 18+, with nothing to `npm install`. `macos-app-performance` is macOS-only by nature; the command-line half needs nothing installed, while Instruments, `xctrace` and XCTest metrics need full Xcode rather than the Command Line Tools, and the skill checks before promising a trace.
+`skills add` takes the **repo path**, not the skill name. Requirements vary per skill; `stage-gate` needs only `git`. `apple-appicon` is fully native on macOS (Xcode Command Line Tools: `sips`, `iconutil`, `swift`); on Linux/Windows it says so up front and falls back to ImageMagick 7 + Tauri's own cross-platform CLI where it can. `discoverability` needs `curl` and Node 18+, with nothing to `npm install`. `macos-app-performance` is macOS-only by nature; the command-line half needs nothing installed, while Instruments, `xctrace` and XCTest metrics need full Xcode rather than the Command Line Tools, and the skill checks before promising a trace. `hardware-concept-study` needs web search, and prefers parallel subagents (without them it runs the passes in sequence, a path not yet tested). `session-move` is Claude Code only and needs `python3`.
 
 > **Claude Code, in a project with no `.claude/` directory yet:** the CLI writes the canonical copy to `.agents/skills/` and skips the `.claude/skills/` symlink, even though it reports "Installing to: … Claude Code". Run `mkdir -p .claude` first, or install globally with `-g`, and the symlink appears as expected.
 
@@ -399,6 +401,65 @@ Rebuilt by [@k97](https://github.com/k97), grounded in Apple's own material:
 
 ---
 
+# hardware-concept-study
+
+Answers whether a physical product is worth building, with numbers a founder can act on: a price that leaves margin, the volume at which it stops losing money, and the cheapest test that could kill it.
+
+## Usage
+
+> Should I build a portable speaker with a replaceable battery? Research the market, what owners complain about, the parts and the cost, and give me a go/no-go.
+
+> Round one said go. Do round two: prototype ladder, unit economics with duties, and a demand test.
+
+## The workflow
+
+| Step | What happens |
+| --- | --- |
+| Round one | Market, voice of customer, hardware, and industrial design, one appendix each, in parallel; every claim sourced, every price dated, a Not verified list at the end |
+| Independent pass | Gets only the brief, never the appendices, and answers the same questions on its own |
+| Reconcile | `RESEARCH.md`: a numbered bottom line, and a table of where the two passes differed and how it was resolved |
+| Round two | On request or after a go: prototype ladder, unit economics, marketing, product family |
+
+## What it gets right that a plain search doesn't
+
+- **Buy vs build per block.** Licensed modules and reference designs are checked first; the founder's own work may be only the part nobody sells.
+- **Price from cost.** Parts at volume, landed cost and the retail multiple, and the price that works if the hoped-for one doesn't.
+- **Duties by HS code.** Customs classification can swing the landed cost, so candidate codes and rulings are named.
+- **Next steps cheapest first**, each with a cost and a pass mark that can stop the project.
+
+## Credits
+
+Built by [@k97](https://github.com/k97).
+
+---
+
+# session-move
+
+Moves a Claude Code session into another repo so the work carries on there. It copies the transcript and memory into the new folder's project directory, so `claude --resume` continues the same session, then writes the context files from the user's own messages: the repo shows what exists, but only the transcript says what was asked, what was decided and how the user wants the work done.
+
+## Usage
+
+> This conversation turned into its own project. Move it to ~/Work/new-app so I can carry on there.
+
+## The workflow
+
+| Step | What happens |
+| --- | --- |
+| Copy | Transcript and memory copied (never moved) to the destination's encoded project folder, using the real path from `pwd -P` |
+| Extract | Every user message pulled from the transcript, including slash-command arguments and messages sent mid-turn |
+| Write | `.claude/context/brief.md`, `.claude/context/decisions.md` and `CLAUDE.md`, quoting the original ask and standing instructions verbatim |
+| Hand over | `cd <repo> && claude --resume <id>`; originals are kept until the user confirms the resume opens |
+
+## Limits
+
+The project-folder layout and resume behaviour are not documented by Anthropic. They were checked on Claude Code 2.1.330 in print mode (`claude -p --resume`, `claude -p --continue`); the interactive resume picker was not tested.
+
+## Credits
+
+Built by [@k97](https://github.com/k97).
+
+---
+
 ## Repo layout
 
 ```
@@ -433,16 +494,22 @@ k97/skills
     │       ├── redirect-trace.sh
     │       ├── extract-jsonld.mjs
     │       └── audit-meta.mjs
-    └── macos-app-performance/
-        ├── SKILL.md
-        └── references/
-            ├── measurement.md        # validity: build settings, repetitions, thermal gate, XCTest
-            ├── instruments.md        # xctrace CLI, template choice, CPU Profiler vs Time Profiler
-            ├── responsiveness.md     # hang thresholds, busy vs blocked, frame budget, launch
-            ├── cpu.md                # sample, hot paths, QoS placement, multi-process apps
-            ├── memory.md             # footprint, leaked vs abandoned, generational analysis
-            ├── energy.md             # wakeups, QoS, App Nap, sleep assertions, thermal state
-            └── review.md             # report structure and baseline format
+    ├── macos-app-performance/
+    │   ├── SKILL.md
+    │   └── references/
+    │       ├── measurement.md        # validity: build settings, repetitions, thermal gate, XCTest
+    │       ├── instruments.md        # xctrace CLI, template choice, CPU Profiler vs Time Profiler
+    │       ├── responsiveness.md     # hang thresholds, busy vs blocked, frame budget, launch
+    │       ├── cpu.md                # sample, hot paths, QoS placement, multi-process apps
+    │       ├── memory.md             # footprint, leaked vs abandoned, generational analysis
+    │       ├── energy.md             # wakeups, QoS, App Nap, sleep assertions, thermal state
+    │       └── review.md             # report structure and baseline format
+    ├── hardware-concept-study/
+    │   ├── SKILL.md
+    │   └── references/
+    │       └── round-two.md          # round-two agents and what unit economics covers
+    └── session-move/
+        └── SKILL.md
 ```
 
 Each `SKILL.md` carries only the six [Agent Skills spec](https://agentskills.io/specification) frontmatter fields, so `npx skills-ref validate skills/<name>` passes.

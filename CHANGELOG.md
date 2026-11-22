@@ -2,6 +2,11 @@
 
 Per-skill versions live in each `SKILL.md` under `metadata.version`. This file lists what changed and when.
 
+## 2026-11-22
+
+- **hardware-concept-study 0.1.0** — new. Researches whether a hardware product is worth building: parallel research passes plus an independent pass reconciled against them, a price built from cost, the break-even volume, and next steps ordered cheapest first. Round two lives in `references/round-two.md`.
+- **session-move 0.1.0** — new, Claude Code only. Copies a session's transcript and memory into another repo's project folder so `--resume` continues there, then writes a brief, a decisions file and a CLAUDE.md from the user's own messages. Folder layout and resume behaviour checked on Claude Code 2.1.330; the interactive resume picker was not tested.
+
 ## 2026-09-19
 
 - **all skills** — body H1s are descriptive titles rather than the skill slug respelled, so the skills.sh page no longer reads as the name twice. stage-gate 0.2.2, discoverability 0.2.1, apple-appicon 0.1.2, macos-app-performance 0.1.2.

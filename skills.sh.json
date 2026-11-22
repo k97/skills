@@ -16,6 +16,16 @@
       "title": "Web",
       "description": "Technical SEO and AI-citation audits with fixes applied in the codebase.",
       "skills": ["discoverability"]
+    },
+    {
+      "title": "Product research",
+      "description": "Go/no-go research for a hardware product: market, customers, parts, cost and break-even.",
+      "skills": ["hardware-concept-study"]
+    },
+    {
+      "title": "Claude Code",
+      "description": "Moving a Claude Code session and its context into another repo.",
+      "skills": ["session-move"]
     }
   ]
 }
