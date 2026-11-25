@@ -17,6 +17,8 @@ Multi-skill collection built on the [Agent Skills](https://agentskills.io) stand
 
 Run the `stage-gate` skill at each boundary, even when the work looks finished — dispatch a fresh reviewer, do not gate your own work: plan written → `--plan`, code written before push → `--dev`, merged → `--release`.
 
+Gate commits: auto
+
 ## Verification
 
 - `/validate-skills` — check every `skills/<name>/SKILL.md` against the agentskills.io spec and Claude Code best practices
