@@ -123,9 +123,18 @@ One feature cycle, three gates:
 
 | Flag | Gate | When | Writes |
 | --- | --- | --- | --- |
-| `--plan` | Plan review — assumptions surfaced, scope traceable, success criteria runnable | after planning, before code | no |
-| `--dev` | Diff review — Simplicity / Surgical / Verification lenses over every hunk | before push or PR | no |
-| `--release` | Hygiene — capture the cycle's lessons into `.claude/rules/`, keep CLAUDE.md lean | after merge or release | yes |
+| `--plan` | Plan review — assumptions surfaced, scope traceable, success criteria runnable | after planning, before code | its report, to `docs/reviews/` |
+| `--dev` | Diff review — Simplicity / Surgical / Verification lenses over every hunk | before push or PR | its report, to `docs/reviews/` |
+| `--release` | Hygiene — capture the cycle's lessons into `.claude/rules/`, keep CLAUDE.md lean | after merge or release | memory file and rules |
+
+**Committing is a project preference.** Each gate reads one line under `## Gates` in your memory file:
+
+```markdown
+Gate commits: auto    # commit what each gate run wrote, nothing else
+Gate commits: off     # leave it in the working tree for you
+```
+
+If it is not set there or in your global instructions, the first gate run asks once and records your answer. Under `auto` the gate snapshots the tree first and never commits a file you already had uncommitted edits in, commits with a pathspec so your other staged work is left out, follows the repo's commit-message style, and never pushes or skips hooks. The report in the conversation ends with a `Commit:` line saying what happened. Details: [`references/gate-output.md`](skills/stage-gate/references/gate-output.md).
 
 There is deliberately no `--full`: the gates run at different moments in the cycle, so chaining them never matches a real invocation.
 

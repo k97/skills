@@ -1,6 +1,6 @@
 # Gate 3 — hygiene pass
 
-Runs after merge or release. Two jobs in order: capture what the cycle taught, then keep the agent memory file lean enough that what it says still gets read. This is the only gate that writes — working tree only, never commit.
+Runs after merge or release. Two jobs in order: capture what the cycle taught, then keep the agent memory file lean enough that what it says still gets read. This is the only gate that edits the project beyond reports and the one-time preference line. It saves no report file; whether its edits are committed is decided by [gate-output.md](gate-output.md).
 
 ## Find the memory file
 
@@ -18,11 +18,12 @@ Run this triage first so the gate stays cheap enough for every cycle:
 - a `## Verification` section exists,
 - the coding guardrails are present or linked (see below),
 - the gate-trigger block is in the memory file (see below),
+- a `Gate commits:` line is set, in the memory file or the user's global instructions ([gate-output.md](gate-output.md)),
 - nothing new to capture from this cycle.
 
-All five true → report "no action needed" with the line count, and stop.
+All six true → report "no action needed" with the line count, and stop.
 
-**No memory file at all?** Not a no-op — create the running agent's native file from the target shape below: discover the Verification commands, seed the guardrails rule, and stop there (nothing to group, nothing to delete). This makes `--release` the day-zero bootstrap for a new repo. Run it once right after your agent's init command (row 5 of [agents.md](agents.md)), too — auto-generated memory files are full of exactly the content the deletion list prunes.
+**No memory file at all?** Not a no-op — create the running agent's native file from the target shape below: discover the Verification commands, seed the guardrails rule, record the commit preference ([gate-output.md](gate-output.md)), and stop there (nothing to group, nothing to delete). This makes `--release` the day-zero bootstrap for a new repo. Run it once right after your agent's init command (row 5 of [agents.md](agents.md)), too — auto-generated memory files are full of exactly the content the deletion list prunes.
 
 ## Job 1 — capture lessons
 
@@ -62,6 +63,8 @@ Run the `stage-gate` skill at each boundary, even when the work looks finished �
 
 It is the one exception to the "move it to the rules location" instinct. If the project installed this skill under a different name, use that name.
 
+The `Gate commits:` preference line goes below it; [gate-output.md](gate-output.md) says how. The block still counts as verbatim with that line present.
+
 ## Refactor steps (only when >100 lines)
 
 1. **Find contradictions.** Conflicting instructions → ask the user which wins. This is the one step that may need input; everything else proceeds.
@@ -88,6 +91,8 @@ One-line description.
 
 (the gate-trigger block above, verbatim)
 
+Gate commits: <auto or off, as the user answered>
+
 ## Verification
 
 - `npm test` — run tests
@@ -96,4 +101,4 @@ One-line description.
 
 ## Output
 
-Report: which memory file was targeted, lessons captured (file + one-line summary each), before/after line count, what moved where, what was deleted and why, whether the gate-trigger block was already present or added, and any contradiction awaiting the user's call. Then stop — no `git add`, no `git commit`.
+Report: which memory file was targeted, lessons captured (file + one-line summary each), before/after line count, what moved where, what was deleted and why, whether the gate-trigger block was already present or added, any contradiction awaiting the user's call, and the `Commit:` line from [gate-output.md](gate-output.md). Then stop.

@@ -2,6 +2,10 @@
 
 Per-skill versions live in each `SKILL.md` under `metadata.version`. This file lists what changed and when.
 
+## 2026-11-25
+
+- **stage-gate 0.3.0** — gates save and can commit what they write. `--plan` and `--dev` save their reports to `docs/reviews/`. A `Gate commits: auto | off` line under `## Gates` in the memory file (or the user's global instructions) decides whether each gate run commits the files it wrote; when it is unset, the first run asks once and records the answer. Commits are pathspec-only, skip files the user had already edited, never push or bypass hooks, and are reported as a `Commit:` line. The procedure lives in `references/gate-output.md`. Gate inference ignores `docs/reviews/`, and the `--release` no-op check gains a sixth condition: the preference is set.
+
 ## 2026-11-22
 
 - **hardware-concept-study 0.1.0** — new. Researches whether a hardware product is worth building: parallel research passes plus an independent pass reconciled against them, a price built from cost, the break-even volume, and next steps ordered cheapest first. Round two lives in `references/round-two.md`.

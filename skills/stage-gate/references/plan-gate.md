@@ -52,6 +52,6 @@ Then the findings (unstated assumptions, silent interpretation picks, speculativ
 - **Ready to build** — no blocking findings.
 - **Needs answers** — list the blocking questions, one line each, in the order they block.
 
-Deliver the verdict and stop. Implementing is the next phase, not this gate.
+Save the report, and commit it if the preference says to, per [gate-output.md](gate-output.md); deliver the verdict, and stop. Implementing is the next phase, not this gate.
 
 Who runs this gate: [reviewer-separation.md](reviewer-separation.md).
